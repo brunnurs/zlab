@@ -15,7 +15,7 @@ import javax.persistence.PersistenceContext;
  */
 @Stateless
 public class ImageFacade extends AbstractFacade<Image> {
-    @PersistenceContext(unitName = "com.zuehlke.lab_zlab_war_1.0-SNAPSHOTPU")
+    @PersistenceContext(unitName = "tracker")
     private EntityManager em;
 
     protected EntityManager getEntityManager() {
