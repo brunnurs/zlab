@@ -1,0 +1,25 @@
+<facelet-taglib xmlns="http://java.sun.com/xml/ns/javaee"
+                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facelettaglibrary_2_0.xsd"
+                  version="2.0">
+      <namespace>http://javaserverfaces.dev.java.net/demo/custom-taglib</namespace>
+      
+      <tag>
+        <tag-name>cloud</tag-name>
+          <component>
+            <component-type>cloud</component-type>
+         </component>
+         <attribute>
+             <name>model</name>
+             <type>com.zuehlke.lab.web.jsf.tag</type>
+         </attribute>
+         <attribute>
+             <name>width</name>
+             <type>java.lang.Integer</type>
+         </attribute>
+         <attribute>
+             <name>height</name>
+             <type>java.lang.Integer</type>
+         </attribute>
+     </tag>
+</facelet-taglib>

@@ -1,0 +1,29 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:cu="http://javaserverfaces.dev.java.net/demo/custom-taglib">
+    <h:head>
+        <title>Cloud</title>
+        <h:outputStylesheet library="css" name="style.css"  />
+    </h:head>
+    <h:body onload="resize_canvas()" >
+        <cu:cloud id="mycloud" model="#{cloudManager.cloud}"/>        
+        <script type="text/Javascript">
+            
+            function onResize(){
+                //get div to gain access to window size
+                div=document.getElementsByTagName('div')[1]
+                //set canvas size to the whole window 
+                canvas=document.getElementsByTagName('canvas')[0]
+                canvas.width=div.scrollWidth
+                canvas.height=div.scrollHeight
+            };
+            onResize();
+            window.addEventListener('resize', onResize, false);
+            
+</script>
+            
+    </h:body>
+</html>
+
