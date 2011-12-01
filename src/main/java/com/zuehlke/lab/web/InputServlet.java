@@ -34,7 +34,7 @@ public class InputServlet extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
         try {
-            bi.addToBlacklist();
+            bi.initData();
             out.println("<html>");
             out.println("<head>");
             out.println("<title>Servlet Input</title>");  

@@ -34,7 +34,7 @@ public class BlacklistService {
     
     private String addWord;
     
-    @PostConstruct
+    //@PostConstruct
     private void loadBlacklist(){
        Query q = em.createNativeQuery("SELECT KEYWORD FROM BLACKLIST");
        BeanResult.setQueryResultClass(q,String.class);
