@@ -37,6 +37,14 @@
         <servlet-name>Input</servlet-name>
         <url-pattern>/Input</url-pattern>
     </servlet-mapping>
+    <filter>
+        <filter-name>PrimeFaces FileUpload Filter</filter-name>
+        <filter-class>org.primefaces.webapp.filter.FileUploadFilter</filter-class>
+    </filter>	
+    <filter-mapping>
+        <filter-name>PrimeFaces FileUpload Filter</filter-name>
+        <servlet-name>Faces Servlet</servlet-name>
+    </filter-mapping>
     <session-config>
         <session-timeout>30</session-timeout>
     </session-config>
@@ -47,4 +55,4 @@
         <param-name>javax.faces.FACELETS_LIBRARIES</param-name>
         <param-value>/WEB-INF/custom-taglib.xml</param-value>
     </context-param>
-    </web-app>
+</web-app>

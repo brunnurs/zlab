@@ -5,6 +5,7 @@
 package com.zuehlke.lab.web.jsf.beans;
 
 import com.zuehlke.lab.service.importer.ImporterService;
+import java.io.IOException;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -21,7 +22,8 @@ public class ImportAdminController {
     @Inject
     ImporterService importService;
     
-    public void uploadWordBundle(FileUploadEvent event){
+    public void uploadWordBundle(FileUploadEvent event) throws IOException{
+        System.out.println("test");
         importService.importWordBundle(event.getFile().getFileName(), event.getFile().getContents());
     }
 }

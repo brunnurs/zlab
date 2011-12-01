@@ -8,15 +8,13 @@
         <title>Importer</title>
     </h:head>
     <h:body>
-        <h:form>
+        <h:form enctype="multipart/form-data">
             Upload your compressed (.zip) Word-Files
-            <p:fileUpload id="image" fileUploadListener="#{importAdminController.uploadWordBundle(event)}"  
+            <p:fileUpload id="image" fileUploadListener="#{importAdminController.uploadWordBundle}"  
                           mode="advanced"
-                          widgetVar=""
-                          sizeLimit="200000"
+                          sizeLimit="20000000"
                           fileLimit="1"
-                          update="achImage image delImage"
-                          allowTypes="/(\.|\/)(zip)$/"/>
+                          allowTypes="/(\.|\/)(doc|docx|zip)$/"/>
         </h:form>
     </h:body>
 </html>
