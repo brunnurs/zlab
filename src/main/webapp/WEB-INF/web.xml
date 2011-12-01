@@ -1,40 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<web-app version="3.0" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
-    <servlet>
-        <servlet-name>ServletAdaptor</servlet-name>
-        <servlet-class>com.sun.jersey.spi.container.servlet.ServletContainer</servlet-class>
-        <load-on-startup>1</load-on-startup>
-    </servlet>
-    <context-param>
-        <param-name>primefaces.THEME</param-name>
-        <param-value>humanity</param-value>
-    </context-param>
-    <servlet-mapping>
-        <servlet-name>ServletAdaptor</servlet-name>
-        <url-pattern>/rest/*</url-pattern>
-    </servlet-mapping>
-    <context-param>
-        <param-name>javax.faces.PROJECT_STAGE</param-name>
-        <param-value>Development</param-value>
-    </context-param>
+
+<web-app xmlns="http://java.sun.com/xml/ns/javaee"
+	 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	 xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
+	 version="3.0">
+             
     <servlet>
         <servlet-name>Faces Servlet</servlet-name>
         <servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
         <load-on-startup>1</load-on-startup>
-    </servlet>
-    <servlet>
-        <servlet-name>Initial Config</servlet-name>
-        <servlet-class>com.challengeearth.application.WebApplicationContext</servlet-class>
-        <load-on-startup>1</load-on-startup>
-    </servlet>
-    <filter>
-        <filter-name>PrimeFaces FileUpload Filter</filter-name>
-        <filter-class>org.primefaces.webapp.filter.FileUploadFilter</filter-class>
-    </filter>
-    <filter-mapping>
-        <filter-name>PrimeFaces FileUpload Filter</filter-name>
-        <servlet-name>Faces Servlet</servlet-name>
-    </filter-mapping>
+    </servlet>         
     <servlet-mapping>
         <servlet-name>Faces Servlet</servlet-name>
         <url-pattern>*.xhtml</url-pattern>
@@ -46,25 +21,6 @@
         </session-timeout>
     </session-config>
     <welcome-file-list>
-        <welcome-file>profile.xhtml</welcome-file>
+        <welcome-file>test.xhtml</welcome-file>
     </welcome-file-list>
-    <login-config>
-        <auth-method>FORM</auth-method>
-        <realm-name>jdbcRealm</realm-name>
-        <form-login-config>
-            <form-login-page>/index.xhtml</form-login-page>
-            <form-error-page>/index.xhtml</form-error-page>
-        </form-login-config>
-    </login-config>
-    <security-constraint>
-        <web-resource-collection>
-            <web-resource-name>Secure Pages</web-resource-name>
-            <url-pattern>/profile.xhtml</url-pattern>
-            <http-method>GET</http-method>
-            <http-method>POST</http-method>
-        </web-resource-collection>
-        <auth-constraint>
-            <role-name>user</role-name>
-        </auth-constraint>
-    </security-constraint>
 </web-app>

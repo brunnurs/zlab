@@ -2,55 +2,45 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.zuehlke.lab.zlab.persistance.entities;
+package com.zuehlke.persistance.entities;
 
 import java.io.Serializable;
+import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 
 /**
  *
- * @author administrator
+ * @author user
  */
 @Entity
-public class Image implements Serializable {
+public class Employee implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-
-    private String fileName;
-    private String filePath;
+    private String name;
     
-    public Image() {
-        
+    @OneToMany
+    private List<RawData> data;
+
+    public List<RawData> getData() {
+        return data;
     }
+
+    public void setData(List<RawData> data) {
+        this.data = data;
+    }   
     
-    public Image(String fileName, String filePath) {
-        this.fileName = fileName;
-        this.filePath = filePath;
+    public String getName() {
+        return name;
     }
 
-    public String getFileName() {
-        return fileName;
-    }
-
-    public void setFileName(String fileName) {
-        this.fileName = fileName;
-    }
-
-    public String getFilePath() {
-        return filePath;
-    }
-
-    public void setFilePath(String filePath) {
-        this.filePath = filePath;
-    }
-    
-    public String getCompleteFilePath() {
-        return this.filePath + "/" + this.fileName;
+    public void setName(String name) {
+        this.name = name;
     }
     
     public Long getId() {
@@ -71,10 +61,10 @@ public class Image implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Image)) {
+        if (!(object instanceof Employee)) {
             return false;
         }
-        Image other = (Image) object;
+        Employee other = (Employee) object;
         if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
@@ -83,7 +73,7 @@ public class Image implements Serializable {
 
     @Override
     public String toString() {
-        return "com.challengeearth.files.Image[ id=" + id + " ]";
+        return "com.zuehlke.persistance.entities.Employee[ id=" + id + " ]";
     }
     
 }
