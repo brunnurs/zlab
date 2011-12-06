@@ -9,6 +9,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Lob;
 import javax.persistence.PrePersist;
 
 /**
@@ -18,16 +19,14 @@ import javax.persistence.PrePersist;
 @Entity
 public class Person extends Owner implements Serializable {
     private static final long serialVersionUID = 1L;
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
     private String firstname;
     private String lastname;
+    @Lob
+    private String rawdata;
 
     public Person() {
         super();
     }
-
     
     public Person(String firstname, String lastname) {
         super();
@@ -60,4 +59,14 @@ public class Person extends Owner implements Serializable {
     public void setLastname(String lastname) {
         this.lastname = lastname;
     }
+
+    public String getRawdata() {
+        return rawdata;
+    }
+
+    public void setRawdata(String rawdata) {
+        this.rawdata = rawdata;
+    }
+    
+
 }
