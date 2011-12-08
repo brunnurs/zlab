@@ -93,7 +93,10 @@ public class UICloud extends UIComponentBase{
           writer.write("TagCanvas.Start('"+id+"','tags_"+cloudId+"');\n");
           writer.write("} catch(e) {// something went wrong, hide the canvas container\n document.getElementById('"+id+"').style.display = 'none';}\n");
           writer.write("};\n");
-          writer.write("function switchCloud(id,label) {TagCanvas.Start('"+id+"','tags_'+id); document.getElementById('title_"+id+"').innerHTML = label; changePath(id,label); return false;}\n");
+          writer.write("function switchCloud(id,label) {TagCanvas.Start('"+id+"','tags_'+id); document.getElementById('title_"+id+"').innerHTML = label; changePath(id,label); return false;");
+//          writer.write( "var body = document.getElementById('body');"
+//                  + "body.");       
+          writer.write( "}\n");
           writer.write("function changePath(id,label) { var found = (-1); for (var i = 0; i < path.length; ++i){if(path[i][0] == id){found = i}}\n");
           writer.write("if(found == (-1)){path.push(new Array(id,label))}\n");
           writer.write("else{path = path.slice(0,found+1)}\n");
@@ -116,8 +119,6 @@ public class UICloud extends UIComponentBase{
         writer.startElement("canvas", null);
         writer.writeAttribute("id",getClientId(context),"id");
         writer.writeAttribute("name", getClientId(context),"clientId");
-        //writer.writeAttribute("width", "100%", null);//getAttributes().get("width"), null);
-        //writer.writeAttribute("height", "100%", null);//getAttributes().get("height"), null);
         writer.endElement("canvas");
         writer.endElement("div");
         writer.startElement("div", null);
@@ -127,7 +128,7 @@ public class UICloud extends UIComponentBase{
         writer.startElement("div", null);
         
         writer.writeAttribute("id","path_"+getClientId(context),"id");
-        writer.write("awdasdasdawdasdasdawdsa");
+        writer.write("Path: ");
         writer.endElement("div");
     }
     

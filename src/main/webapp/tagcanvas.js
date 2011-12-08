@@ -55,8 +55,8 @@ function Cylinder(n,o,i,j,k,l) {
 	}
 	return pts;
 }
-function PointsOnCylinderV(n) { return Cylinder(n) }
-function PointsOnCylinderH(n) { return Cylinder(n,1) }
+function PointsOnCylinderV(n) {return Cylinder(n)}
+function PointsOnCylinderH(n) {return Cylinder(n,1)}
 function SetAlpha(c,a) {
 	var d = c, p1, p2, ae = (a*1).toPrecision(3) + ')';
 	if(c[0] === '#') {
@@ -162,10 +162,10 @@ function FindTextBoundingBox(s,f,ht) {
 	TextSet(c,ht + 'px ' + f,'#fff',s)
 
 	idata = c.getImageData(0,0,w,h);
-	w1 = idata.width; h1 = idata.height;
+	w1 = idata.width;h1 = idata.height;
 	ex = {
-		min: { x: w1, y: h1 },
-		max: { x: -1, y: -1 }
+		min: {x: w1, y: h1},
+		max: {x: -1, y: -1}
 	};
 	for(y = 0; y < h1; ++y) {
 		for(x = 0; x < w1; ++x) {
@@ -248,6 +248,18 @@ function MouseClick(e) {
 		t.tc[tg].Clicked(e);
 	}
 }
+
+function MouseRightClick(e) {
+	var t = TagCanvas, cb = doc.addEventListener ? 0 : 1,
+		tg = e.target && Defined(e.target.id) ? e.target.id : e.srcElement.parentNode.id;
+	if(tg && t.tc[tg]) {
+		MouseMove(e);
+		t.tc[tg].RightClicked(e);
+	}
+}
+
+
+
 function MouseWheel(e) {
 	var t = TagCanvas,
 		tg = e.target && Defined(e.target.id) ? e.target.id : e.srcElement.parentNode.id;
@@ -335,7 +347,7 @@ function Tag(tc,name,a,v,w,h) {
 	this.image = name.src ? name : null;
 	this.name = name.src ? '' : name;
 	this.a = a;
-	this.p3d = { x: v[0] * tc.radius * 1.1, y: v[1] * tc.radius * 1.1, z: v[2] * tc.radius * 1.1};
+	this.p3d = {x: v[0] * tc.radius * 1.1, y: v[1] * tc.radius * 1.1, z: v[2] * tc.radius * 1.1};
 	this.x = this.y = 0;
 	this.w = w;
 	this.h = h;
@@ -452,6 +464,13 @@ Tproto.Calc = function(yaw,pitch) {
 	this.sc = (t.z1 + t.z2 - pp.z) / t.z2;
 	this.alpha = Math.max(mb,Math.min(1,mb + 1 - ((pp.z - t.z2 + r) / (2 * r))));
 };
+
+Tproto.RightClicked = function(e) {
+        var div = new HTMLDivElement();
+        div.innerHTML = 'popup';
+	document.appendChild(div);
+};
+
 Tproto.Clicked = function(e) {
 	var a = this.a, t = a.target, h = a.href, evt;
 	if(t != '' && t != '_self') {
@@ -562,9 +581,11 @@ function TagCanvas(cid,lctr,opt) {
 
 	this.yaw = this.initial ? this.initial[0] * this.maxSpeed : 0;
 	this.pitch = this.initial ? this.initial[1] * this.maxSpeed : 0;
-	AddHandler('mousemove', MouseMove, c);
+	AddHandler('contextmenu', MouseRightClick, c);
+        AddHandler('mousemove', MouseMove, c);
 	AddHandler('mouseout', MouseMove, c);
 	AddHandler('mouseup', MouseClick, c);
+        
 	if(this.wheelZoom) {
 		AddHandler('mousewheel', MouseWheel, c);
 		AddHandler('DOMMouseScroll', MouseWheel, c);
@@ -631,6 +652,14 @@ TCproto.Clicked = function(e) {
 			t[a.index].Clicked(e);
 	} catch(ex) {
 	}
+};
+TCproto.RightClicked = function(e) {
+        var t = this.taglist, a = this.active;
+	try {
+		if(a && t[a.index]) 
+			t[a.index].RightClicked(e);
+	} catch(ex) {
+        }
 };
 TCproto.Wheel = function(i) {
 	var z = this.zoom + this.zoomStep * (i ? 1 : -1);

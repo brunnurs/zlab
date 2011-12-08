@@ -29,6 +29,11 @@
         <servlet-name>Input</servlet-name>
         <servlet-class>com.zuehlke.lab.web.InputServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>ServletAdaptor</servlet-name>
+        <servlet-class>com.sun.jersey.spi.container.servlet.ServletContainer</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
     <servlet-mapping>
         <servlet-name>Faces Servlet</servlet-name>
         <url-pattern>*.xhtml</url-pattern>
@@ -36,6 +41,10 @@
     <servlet-mapping>
         <servlet-name>Input</servlet-name>
         <url-pattern>/Input</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ServletAdaptor</servlet-name>
+        <url-pattern>/*</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>30</session-timeout>
@@ -47,4 +56,4 @@
         <param-name>javax.faces.FACELETS_LIBRARIES</param-name>
         <param-value>/WEB-INF/custom-taglib.xml</param-value>
     </context-param>
-    </web-app>
+</web-app>

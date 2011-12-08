@@ -6,14 +6,20 @@
     <h:head>
         <title>Cloud</title>
         <h:outputStylesheet library="css" name="style.css"  />
+        <h:outputScript library="js" name="jquery-1.7.1.js"/>
     </h:head>
     <h:body onload="resize_canvas()" >
-        <cu:cloud id="mycloud" model="#{cloudManager.cloud}"/>        
+        <cu:cloud id="mycloud" model="#{cloudManager.cloud}"  />
+        
         <script type="text/Javascript">
+            
+            $(document).ready(function(){$(document).bind('contextmenu', function(e){return false;});});
+            
             
             function onResize(){
                 //get div to gain access to window size
                 div=document.getElementsByTagName('div')[1]
+                
                 //set canvas size to the whole window 
                 canvas=document.getElementsByTagName('canvas')[0]
                 canvas.width=div.scrollWidth

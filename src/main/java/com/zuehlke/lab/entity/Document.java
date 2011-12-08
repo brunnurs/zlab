@@ -88,6 +88,10 @@ public class Document implements Serializable {
         return this.keywordMap.remove(word);
     }
     
+    public Keyword getKeyword(String word) {
+        return this.keywordMap.get(word);
+    }
+    
     public void addKeyword(Keyword keyword) {
         this.keywordMap.put(keyword.getWord(),keyword);
     }

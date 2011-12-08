@@ -52,7 +52,7 @@ public class BlacklistService {
         }
         em.flush();
         
-        String sql = "INSERT ('"+word+"') INTO BLacklist";
+        String sql = "INSERT INTO BLacklist values ('"+word+"')";
         System.out.println(sql);
         
         q = em.createNativeQuery(sql);
