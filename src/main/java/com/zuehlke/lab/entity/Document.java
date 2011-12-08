@@ -43,14 +43,23 @@ public class Document implements Serializable {
     
     private DocumentSource source;
     
+    private String rawData;
+    
     @Transient
     private Map<String,Keyword> keywordMap;
     
     public Document(){
         keywordMap = new HashMap<String, Keyword>();
     }
-    
 
+    public String getRawData() {
+        return rawData;
+    }
+
+    public void setRawData(String rawData) {
+        this.rawData = rawData;
+    }
+    
     public Long getId() {
         return id;
     }
