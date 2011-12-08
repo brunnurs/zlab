@@ -14,6 +14,8 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import com.zuehlke.lab.entity.Document;
 import com.zuehlke.lab.entity.Keyword;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -50,6 +52,25 @@ public class SynonymsServices {
        //synonyms = new HashSet<String>(q.getResultList());
        System.out.print("dsf");
        
+    }
+    
+    public Collection<Keyword> detectSynonyms(Collection<Keyword> keywords){
+        Map<String,Keyword> retVal = new HashMap<String, Keyword>();
+        for(Keyword k : keywords){
+            String sy = synonyms.get(k.getWord());
+            if(sy != null){
+                Keyword syKey = retVal.get(sy);
+                if(syKey == null){
+                    syKey = new Keyword(sy,k.getCount());
+                    retVal.put(sy, syKey);
+                }else{
+                    syKey.setCount(syKey.getCount()+k.getCount());
+                }
+            }else{
+                retVal.put(k.getWord(), k);
+            }
+        }
+        return retVal.values();
     }
     
     public void addSynonym(String word, String synonym){

@@ -15,6 +15,8 @@ import javax.persistence.Query;
 import com.zuehlke.lab.entity.Document;
 import com.zuehlke.lab.entity.Keyword;
 import com.zuehlke.lab.service.util.BeanResult;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -40,6 +42,16 @@ public class BlacklistService {
        BeanResult.setQueryResultClass(q,String.class);
         
        blacklist = new HashSet<String>(q.getResultList());
+    }
+    
+    public Collection<String> removeBlacklist(Collection<String> keywords){
+        List<String> retVal = new ArrayList<String>();
+        for(String keyword : keywords){
+            if(!blacklist.contains(keyword)){
+                retVal.add(keyword);
+            }
+        }
+        return retVal;
     }
     
     public void addToBlackList(String word){
