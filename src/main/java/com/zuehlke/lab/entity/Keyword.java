@@ -47,7 +47,6 @@ public class Keyword implements Serializable{
         this.word = word;
         this.count = count;
         this.document = document;
-        document.addKeyword(this);
     }
 
     public Long getId() {
@@ -79,6 +78,6 @@ public class Keyword implements Serializable{
     }
 
     public void setDocument(Document document) {
-        this.document = document;
+        this.document = document;   
     }
 }

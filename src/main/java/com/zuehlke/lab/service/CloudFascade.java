@@ -24,15 +24,15 @@ import javax.ejb.Stateless;
 public class CloudFascade{
     
     @EJB
-    private BlacklistService blacklistService;
+    private RelevanceService blacklistService;
     @EJB
     private SynonymsServices synonymsService;
     
-    @DELETE
-    @Path("keyword/remove/")
-    public void addToBlacklist(@QueryParam("word") String keyword) {
-        blacklistService.addToBlackList(keyword);
-    }
+//    @DELETE
+//    @Path("keyword/remove/")
+//    public void addToBlacklist(@QueryParam("word") String keyword) {
+//        blacklistService.addToBlackList(keyword);
+//    }
     
     @PUT
     @Path("keyword/synonym/")
@@ -40,11 +40,11 @@ public class CloudFascade{
         synonymsService.addSynonym(keyword, synonym);
     }
     
-    @PUT
-    @Path("keyword/category")
-    public void newCategory(@QueryParam("word") String keyword, @QueryParam("category") String synonym) {
-        blacklistService.addToBlackList(keyword);
-    }
+//    @PUT
+//    @Path("keyword/category")
+//    public void newCategory(@QueryParam("word") String keyword, @QueryParam("category") String synonym) {
+//        blacklistService.addToBlackList(keyword);
+//    }
     
     @GET
     @Path("cloud")

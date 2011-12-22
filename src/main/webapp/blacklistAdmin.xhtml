@@ -2,18 +2,41 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:p="http://primefaces.org/ui">
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
 
     <h:head>
         <title>Importer</title>
     </h:head>
+    <script type="text/Javascript">
+        
+         function changeJuge(id){
+             div=document.getElementById(id);
+             div.innerText = 'USER';
+        }
+        
+        
+    </script>
     <h:body>
-        <h:form enctype="multipart/form-data">
-            <h:dataTable var="keyword" value="#{blacklistManager.keywords}" varStatus="status">
-                <h:column><h:selectBooleanCheckbox value="#{keyword.blacklisted}"></h:selectBooleanCheckbox></h:column>
-                <h:column>#{keyword.word}</h:column>
-            </h:dataTable>
-            <h:commandButton  value="submit" type="submit" action="#{blacklistManager.handle}" />
+        <h:form enctype="multipart/form-data" id="wordForm">
+            <p:dataTable id="wordlist" var="keyword" rowIndexVar="index" widgetVar="wordTable" value="#{blacklistManager.keywords}" paginator="true" rows="20"  binding="#{blacklistManager.htmlDataTable}"
+                 paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"  
+                 rowsPerPageTemplate="10,20,50" >
+                <f:facet name="header">  
+                   Founded Words:
+                </f:facet>
+                <p:column id="word" filterBy="#{keyword.word}" headerText="word"  filterMatchMode="contains">  
+                    <h:outputText value="#{keyword.word}"/>
+                </p:column>
+                <p:column id="jug" headerText="juged by" filterBy="#{keyword.juged}" filterOptions="#{blacklistManager.jugedOption}"  filterMatchMode="exact">
+                    <h:outputText id="option" value="#{keyword.juged}"/>
+                </p:column>
+                <p:column id="operation" headerText="blacklisted" >
+                    <p:selectBooleanCheckbox value="#{keyword.blacklisted}" onchange="changeJuge('wordForm:wordlist:#{index}:option')" >
+                        <p:ajax event="valueChange" listener="#{blacklistManager.handleChange}"/> 
+                    </p:selectBooleanCheckbox>   
+                </p:column>
+            </p:dataTable>
         </h:form>
     </h:body>
 </html>

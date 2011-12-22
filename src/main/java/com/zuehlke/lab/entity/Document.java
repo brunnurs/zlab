@@ -15,6 +15,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.PostLoad;
@@ -43,6 +44,7 @@ public class Document implements Serializable {
     
     private DocumentSource source;
     
+    @Lob
     private String rawData;
     
     @Transient
@@ -85,11 +87,10 @@ public class Document implements Serializable {
         return keywordMap.values();
     }
 
-    
-    public void setKeywords(Collection<Keyword> keywords) {
-        this.keywordMap.clear();
+    public void addKeywords(Collection<Keyword> keywords) {
         for(Keyword k : keywords){
             this.keywordMap.put(k.getWord(), k);
+            k.setDocument(this);
         }
     }
     

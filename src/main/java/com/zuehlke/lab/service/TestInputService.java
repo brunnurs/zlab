@@ -31,7 +31,7 @@ public class TestInputService {
     EntityManager em;
     
     @EJB
-    BlacklistService bls;
+    RelevanceService bls;
 
     public void initData() {
         
@@ -229,9 +229,9 @@ public class TestInputService {
     }
 
     public void addToBlacklist() {
-        bls.addToBlackList("Java");
-        bls.addToBlackList("Herr");
-        bls.addToBlackList("Technologie");
+//        bls.addToBlackList("Java");
+//        bls.addToBlackList("Herr");
+//        bls.addToBlackList("Technologie");
     }
     
 }
