@@ -11,6 +11,7 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.List;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
@@ -51,6 +52,7 @@ public class WikiReaderTest {
     }
     
     @Test
+    @Ignore
     public void testReadArticleFileWithRealData() throws FileNotFoundException, Throwable{
         //**** prepare ****
         reader.setMaxReadLines(20000000);

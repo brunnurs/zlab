@@ -10,6 +10,7 @@ import com.zuehlke.lab.entity.WikiCategory;
 import java.io.FileNotFoundException;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
@@ -35,7 +36,7 @@ public class CategoryImporterServiceTest {
     public void tearDown() {
     }
 
-      @Test
+    @Test
     public void testReadArticleFileWithTestData(){
         //**** prepare ****
         categoryService.setDataInputStream(getClass().getClassLoader().getResourceAsStream("wikitestdata/test_skos_categories.nt"));
@@ -60,6 +61,7 @@ public class CategoryImporterServiceTest {
     }
     
     @Test
+    @Ignore
     public void testReadArticleFileWithRealData() throws FileNotFoundException{
         //**** prepare ****
         categoryService.setMaxReadLines(1000000);
