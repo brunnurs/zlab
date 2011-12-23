@@ -4,11 +4,11 @@
  */
 package com.zuehlke.analysis.wikicategory;
 
+import org.junit.Ignore;
 import com.zuehlke.lab.entity.WikiCategory;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.InputStream;
 import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
@@ -51,6 +51,7 @@ public class WikiReaderTest {
     }
     
     @Test
+    @Ignore
     public void testReadArticleFileWithRealData() throws FileNotFoundException, Throwable{
         //**** prepare ****
         reader.setMaxReadLines(20000000);
