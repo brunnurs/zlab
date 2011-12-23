@@ -1,0 +1,38 @@
+<http://dbpedia.org/resource/Category:Computer_science> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2004/02/skos/core#Concept> .
+<http://dbpedia.org/resource/Category:The_Simpsons> <http://www.w3.org/2004/02/skos/core#broader> <http://dbpedia.org/resource/Category:Works_by_Matt_Groening> .
+<http://dbpedia.org/resource/Category:The_Simpsons> <http://www.w3.org/2004/02/skos/core#broader> <http://dbpedia.org/resource/Category:Television_series_about_dysfunctional_families> .
+<http://dbpedia.org/resource/Category:The_Simpsons> <http://www.w3.org/2004/02/skos/core#broader> <http://dbpedia.org/resource/Category:Television_series_by_Fox_Television_Studios> .
+<http://dbpedia.org/resource/Category:The_Simpsons> <http://www.w3.org/2004/02/skos/core#broader> <http://dbpedia.org/resource/Category:Media_franchises> .
+<http://dbpedia.org/resource/Category:The_Simpsons> <http://www.w3.org/2004/02/skos/core#broader> <http://dbpedia.org/resource/Category:Categories_named_after_fictional_characters> .
+<http://dbpedia.org/resource/Category:The_Simpsons> <http://www.w3.org/2004/02/skos/core#broader> <http://dbpedia.org/resource/Category:Categories_named_after_animated_television_series> .
+<http://dbpedia.org/resource/Category:The_Simpsons> <http://www.w3.org/2004/02/skos/core#broader> <http://dbpedia.org/resource/Category:Animated_sitcoms> .
+<http://dbpedia.org/resource/Category:The_Simpsons> <http://www.w3.org/2004/02/skos/core#prefLabel> "The Simpsons"@en .
+<http://dbpedia.org/resource/Category:The_Simpsons> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2004/02/skos/core#Concept> .
+<http://dbpedia.org/resource/Category:Algorithms> <http://www.w3.org/2004/02/skos/core#broader> <http://dbpedia.org/resource/Category:Computer_programming> .
+<http://dbpedia.org/resource/Category:Algorithms> <http://www.w3.org/2004/02/skos/core#broader> <http://dbpedia.org/resource/Category:Computer_science> .
+<http://dbpedia.org/resource/Category:Algorithms> <http://www.w3.org/2004/02/skos/core#broader> <http://dbpedia.org/resource/Category:Applied_mathematics> .
+<http://dbpedia.org/resource/Category:Algorithms> <http://www.w3.org/2004/02/skos/core#prefLabel> "Algorithms"@en .
+<http://dbpedia.org/resource/Category:Algorithms> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2004/02/skos/core#Concept> .
+<http://dbpedia.org/resource/Category:Data_structures> <http://www.w3.org/2004/02/skos/core#broader> <http://dbpedia.org/resource/Category:Computer_science> .
+<http://dbpedia.org/resource/Category:Data_structures> <http://www.w3.org/2004/02/skos/core#broader> <http://dbpedia.org/resource/Category:Computer_programming> .
+<http://dbpedia.org/resource/Category:Data_structures> <http://www.w3.org/2004/02/skos/core#broader> <http://dbpedia.org/resource/Category:Data_management> .
+<http://dbpedia.org/resource/Category:Data_structures> <http://www.w3.org/2004/02/skos/core#broader> <http://dbpedia.org/resource/Category:Computer_data> .
+<http://dbpedia.org/resource/Category:Data_structures> <http://www.w3.org/2004/02/skos/core#prefLabel> "Data structures"@en .
+<http://dbpedia.org/resource/Category:Data_structures> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2004/02/skos/core#Concept> .
+<http://dbpedia.org/resource/Category:Monty_Python> <http://www.w3.org/2004/02/skos/core#broader> <http://dbpedia.org/resource/Category:Categories_named_after_television_series> .
+<http://dbpedia.org/resource/Category:Monty_Python> <http://www.w3.org/2004/02/skos/core#prefLabel> "Monty Python"@en .
+<http://dbpedia.org/resource/Category:Monty_Python> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2004/02/skos/core#Concept> .
+<http://dbpedia.org/resource/Category:Middle-earth_places> <http://www.w3.org/2004/02/skos/core#prefLabel> "Middle-earth places"@en .
+<http://dbpedia.org/resource/Category:Middle-earth_places> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2004/02/skos/core#Concept> .
+<http://dbpedia.org/resource/Category:Middle-earth_characters> <http://www.w3.org/2004/02/skos/core#broader> <http://dbpedia.org/resource/Category:Characters_in_fantasy_novel_series_of_the_20th_century> .
+<http://dbpedia.org/resource/Category:Middle-earth_characters> <http://www.w3.org/2004/02/skos/core#broader> <http://dbpedia.org/resource/Category:Characters_in_British_novels_of_the_20th_century> .
+<http://dbpedia.org/resource/Category:Middle-earth_characters> <http://www.w3.org/2004/02/skos/core#broader> <http://dbpedia.org/resource/Category:Middle-earth> .
+<http://dbpedia.org/resource/Category:Middle-earth_characters> <http://www.w3.org/2004/02/skos/core#prefLabel> "Middle-earth characters"@en .
+<http://dbpedia.org/resource/Category:Middle-earth_characters> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2004/02/skos/core#Concept> .
+<http://dbpedia.org/resource/Category:Middle-earth> <http://www.w3.org/2004/02/skos/core#broader> <http://dbpedia.org/resource/Category:Media_franchises> .
+<http://dbpedia.org/resource/Category:Middle-earth> <http://www.w3.org/2004/02/skos/core#broader> <http://dbpedia.org/resource/Category:J._R._R._Tolkien> .
+<http://dbpedia.org/resource/Category:Middle-earth> <http://www.w3.org/2004/02/skos/core#broader> <http://dbpedia.org/resource/Category:Fantasy_worlds> .
+<http://dbpedia.org/resource/Category:Middle-earth> <http://www.w3.org/2004/02/skos/core#broader> <http://dbpedia.org/resource/Category:Artificial_mythology> .
+<http://dbpedia.org/resource/Category:Middle-earth> <http://www.w3.org/2004/02/skos/core#prefLabel> "Middle-earth"@en .
+<http://dbpedia.org/resource/Category:Middle-earth> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2004/02/skos/core#Concept> .
+<http://dbpedia.org/resource/Category:Chemistry> <http://www.w3.org/2004/02/skos/core#broader> <http://dbpedia.org/resource/Category:Physical_sciences> .
