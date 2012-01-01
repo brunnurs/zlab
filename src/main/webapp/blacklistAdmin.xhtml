@@ -9,12 +9,11 @@
     </h:head>
     <h:body>
         <h:form enctype="multipart/form-data">
-            Upload your compressed (.zip) Word-Files
-            <p:fileUpload id="image" fileUploadListener="#{importAdminController.uploadWordBundle}"  
-                          mode="advanced"
-                          sizeLimit="20000000"
-                          fileLimit="1"
-                          allowTypes="/(\.|\/)(doc|docx|zip)$/"/>
+            <h:dataTable var="keyword" value="#{blacklistManager.keywords}" varStatus="status">
+                <h:column><h:selectBooleanCheckbox value="#{keyword.blacklisted}"></h:selectBooleanCheckbox></h:column>
+                <h:column>#{keyword.word}</h:column>
+            </h:dataTable>
+            <h:commandButton  value="submit" type="submit" action="#{blacklistManager.handle}" />
         </h:form>
     </h:body>
 </html>

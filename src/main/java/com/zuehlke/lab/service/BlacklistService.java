@@ -36,12 +36,13 @@ public class BlacklistService {
     
     private String addWord;
     
-    //@PostConstruct
+    @PostConstruct
     private void loadBlacklist(){
        Query q = em.createNativeQuery("SELECT KEYWORD FROM BLACKLIST");
-       BeanResult.setQueryResultClass(q,String.class);
+       
+       //BeanResult.setQueryResultClass(q,String.class);
         
-       blacklist = new HashSet<String>(q.getResultList());
+       blacklist = new HashSet<String>();//q.getResultList());
     }
     
     public Collection<String> removeBlacklist(Collection<String> keywords){
@@ -68,7 +69,7 @@ public class BlacklistService {
         System.out.println(sql);
         
         q = em.createNativeQuery(sql);
-        //q.executeUpdate();
+        q.executeUpdate();
         
         blacklist.add(word);
     }

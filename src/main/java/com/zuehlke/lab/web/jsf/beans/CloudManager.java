@@ -38,28 +38,12 @@ public class CloudManager implements Serializable {
     Cloud cloud;
 	
     public CloudManager(){
-        cloud = new Cloud("Company",0,null);
-        Cloud jCloud = new Cloud("Java",20,null);
-        Cloud jeeCloud = new Cloud("JEE",20,null);
-        jeeCloud.addElement("Glassfish",20);
-        jeeCloud.addElement("JBOSS",10);
-        jeeCloud.addElement("Tomcat",15);
-        jeeCloud.addElement("EJB 3.0",10);
-        jeeCloud.addElement("EJB 2.1",5);
-        jCloud.addElement(jeeCloud);
-        jCloud.addElement("JDBC",10);
-        jCloud.addElement("JNDI",5);
-        jCloud.addElement("Spring",15);
-        cloud.addElement(jCloud);
-        cloud.addElement(".Net",15);
-        cloud.addElement("VB",1);
-        cloud.addElement("C++",5);
     }
 
     public Cloud getCloud() {
         
 //        if(cloud == null){
-          return  cloud = cloudService.getRecursiveCloud(Arrays.asList(new SearchAttribute[]{SearchAttribute.TECHNOLOGY,SearchAttribute.UNIT,SearchAttribute.PERSON}));
+          return  cloud = cloudService.getCloud();//getRecursiveCloud(Arrays.asList(new SearchAttribute[]{SearchAttribute.TECHNOLOGY}));
 //        }
         //return cloud;
         

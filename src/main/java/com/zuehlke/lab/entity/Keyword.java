@@ -73,4 +73,12 @@ public class Keyword implements Serializable{
     public void setWord(String word) {
         this.word = word;
     }
+
+    public Document getDocument() {
+        return document;
+    }
+
+    public void setDocument(Document document) {
+        this.document = document;
+    }
 }

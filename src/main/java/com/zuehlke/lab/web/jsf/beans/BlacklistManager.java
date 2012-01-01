@@ -1,18 +1,16 @@
 package com.zuehlke.lab.web.jsf.beans;
 
 
+import com.zuehlke.lab.entity.Keyword;
+import com.zuehlke.lab.service.BlacklistService;
+import com.zuehlke.lab.service.CloudService;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.List;
+import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.enterprise.context.RequestScoped;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import com.zuehlke.lab.web.jsf.model.Cloud;
-import com.zuehlke.lab.service.CloudService;
-import com.zuehlke.lab.service.SearchAttribute;
 
 /*
  * To change this template, choose Tools | Templates
@@ -25,51 +23,67 @@ import com.zuehlke.lab.service.SearchAttribute;
  */
 @ManagedBean
 @RequestScoped
-public class CloudManager implements Serializable {
+public class BlacklistManager implements Serializable {
+    
+    
+    public class KeywordSelection{
+        
+        private boolean blacklisted;
+        private String Word;
+
+        public KeywordSelection(boolean blacklisted, String Word) {
+            this.blacklisted = blacklisted;
+            this.Word = Word;
+        }
+
+        public String getWord() {
+            return Word;
+        }
+
+        public void setWord(String Word) {
+            this.Word = Word;
+        }
+
+        public boolean isBlacklisted() {
+            return blacklisted;
+        }
+
+        public void setBlacklisted(boolean blacklisted) {
+            this.blacklisted = blacklisted;
+        }
+    }
  
     private static final long serialVersionUID = 1L;
+    private List<KeywordSelection> keywords;
+    
+    @EJB
+    BlacklistService blacklistService;
+	
     
     @EJB
     CloudService cloudService;
     
-    @PersistenceContext(unitName="cloudCompPU")
-    EntityManager em;
-        
-    Cloud cloud;
-	
-    public CloudManager(){
-        cloud = new Cloud("Company",0,null);
-        Cloud jCloud = new Cloud("Java",20,null);
-        Cloud jeeCloud = new Cloud("JEE",20,null);
-        jeeCloud.addElement("Glassfish",20);
-        jeeCloud.addElement("JBOSS",10);
-        jeeCloud.addElement("Tomcat",15);
-        jeeCloud.addElement("EJB 3.0",10);
-        jeeCloud.addElement("EJB 2.1",5);
-        jCloud.addElement(jeeCloud);
-        jCloud.addElement("JDBC",10);
-        jCloud.addElement("JNDI",5);
-        jCloud.addElement("Spring",15);
-        cloud.addElement(jCloud);
-        cloud.addElement(".Net",15);
-        cloud.addElement("VB",1);
-        cloud.addElement("C++",5);
+    @PostConstruct
+    protected void init(){
+        keywords = new ArrayList<KeywordSelection>();
+        for(Keyword k : cloudService.getTopKeyWords(1000)){
+            keywords.add(new KeywordSelection(false, k.getWord()));
+        }
     }
 
-    public Cloud getCloud() {
-        
-//        if(cloud == null){
-          return  cloud = cloudService.getRecursiveCloud(Arrays.asList(new SearchAttribute[]{SearchAttribute.TECHNOLOGY,SearchAttribute.UNIT,SearchAttribute.PERSON}));
-//        }
-        //return cloud;
-        
-        //return cloudService.getCloud(em.find(Course.class, 6L)); 
-        //return cloudService.getCloud(em.find(Person.class, 1L));
-        //return cloud;
-        //return cloudService.getCloud();
+    public List<KeywordSelection> getKeywords() {
+        return keywords;
     }
 
-    public void setCloud(Cloud cloud) {
-        this.cloud = cloud;
+    public void setKeywords(List<KeywordSelection> keywords) {
+        this.keywords = keywords;
+    }
+    
+    public void handle(){
+        for(KeywordSelection k : keywords){
+            if(k.isBlacklisted()){
+                blacklistService.addToBlackList(k.getWord());
+            }
+        }
     }
 }

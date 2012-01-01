@@ -112,4 +112,12 @@ public class Document implements Serializable {
     public void setOwner(Owner owner) {
         this.owner = owner;
     }
+
+    public DocumentSource getSource() {
+        return source;
+    }
+
+    public void setSource(DocumentSource source) {
+        this.source = source;
+    }
 }

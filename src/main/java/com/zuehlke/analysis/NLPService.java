@@ -8,9 +8,9 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.ejb.LocalBean;
-import javax.inject.Inject;
 import org.apache.commons.lang3.mutable.MutableInt;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -22,21 +22,22 @@ import org.apache.commons.lang3.tuple.Pair;
 @LocalBean
 public class NLPService {
     
-    @Inject
+    @EJB
     private POSTaggingService posTaggingService;
     
-    @Inject
+    @EJB
     private LanguageDetectionService languageDetectionService;
     
     public Map<String, MutableInt> extractNouns(String text) {
         List<Pair<String, String>> taggedWords = Collections.EMPTY_LIST;
         
-        switch(languageDetectionService.getLanguage(text)){
-            case GERMAN:
-                taggedWords = posTaggingService.tagGermanText(text);
-                break;
-            case ENGLISH:
-                taggedWords = posTaggingService.tagEnglishText(text);
+        Language language = languageDetectionService.getLanguage(text);
+        
+        if(language == Language.GERMAN){
+            taggedWords = posTaggingService.tagGermanText(text);
+        }
+        if(language == Language.ENGLISH){
+            taggedWords = posTaggingService.tagEnglishText(text);
         }
         
         Map<String, MutableInt> nouns = new HashMap<String, MutableInt>();

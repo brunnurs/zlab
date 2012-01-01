@@ -28,7 +28,7 @@ import com.zuehlke.lab.entity.view.ReadOnlyKeyword;
 public class CloudService {
     
     
-    private static String ALL_SQL = "Select k.word, k.count FROM AGG_KEYWORD as k";
+    private static String ALL_SQL = "Select k.word, k.count FROM AGG_KEYWORD as k ORDER BY k.count DESC";
     private static String PERSON_SQL = "Select k.word, k.count FROM PERSON_AGG_KEYWORD as k WHERE k.person_id = ?1";
     private static String COURSE_SQL = "Select k.word, k.count FROM EVENT_AGG_KEYWORD as k WHERE k.course_id = ?1";
     
@@ -96,8 +96,16 @@ public class CloudService {
     }
     
     
+    public List<Keyword> getTopKeyWords(int amount){
+       Query q = em.createNativeQuery(ALL_SQL);
+       q.setMaxResults(amount);
+       BeanResult.setQueryResultClass(q, ReadOnlyKeyword.class);
+       return q.getResultList();
+    }
+    
     public Cloud getCloud(){
        Query q = em.createNativeQuery(ALL_SQL);
+       q.setMaxResults(100);
        BeanResult.setQueryResultClass(q, ReadOnlyKeyword.class); 
        return getCloud("company",q.getResultList());
     }

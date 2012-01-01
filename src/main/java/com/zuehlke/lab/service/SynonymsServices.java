@@ -14,7 +14,6 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import com.zuehlke.lab.entity.Document;
 import com.zuehlke.lab.entity.Keyword;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -42,11 +41,11 @@ public class SynonymsServices {
     @PostConstruct
     private void loadSynonym(){
         
-       Query q = em.createNativeQuery("SELECT SYNONYM , KEYWORD FROM SYNONYM");
+//       Query q = em.createNativeQueryat com.zuehlke.lab.service.SynonymsServices.loadSynonym(SynonymsServices.java:45)("SELECT SYNONYM , KEYWORD FROM SYNONYM");
        
-       for(String[] res : (List<String[]>)q.getResultList()){
-           synonyms.put(res[0], res[1]);
-       }
+//       for(String[] res : (List<String[]>)q.getResultList()){
+  //         synonyms.put(res[0], res[1]);
+    //   }
        //BeanResult.setQueryResultClass(q,String.class);
         
        //synonyms = new HashSet<String>(q.getResultList());

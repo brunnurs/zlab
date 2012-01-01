@@ -28,6 +28,12 @@
             onResize();
             window.addEventListener('resize', onResize, false);
             
+            $.ajax({
+                url: 'http://localhost:8080/cloudy/',
+                type: 'DELETE',
+                data: data,
+                success: callback });
+            
 </script>
             
     </h:body>

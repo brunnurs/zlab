@@ -6,7 +6,6 @@ package com.zuehlke.analysis;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.LinkedList;
@@ -16,10 +15,6 @@ import java.util.logging.Logger;
 import javax.ejb.Stateless;
 import javax.ejb.LocalBean;
 
-enum Language {
-
-    GERMAN, ENGLISH, UNKNOWN
-};
 
 /**
  *
@@ -28,16 +23,16 @@ enum Language {
 @Stateless
 @LocalBean
 public class LanguageDetectionService {
-
+    
     private List<String> englishWords;
-    private List<String> germanWords;
+    private List<String> germanWords; 
 
     public LanguageDetectionService() {
         englishWords = readWords("textresources/top1000en.txt");
         germanWords = readWords("textresources/top1000de.txt");
     }
 
-    Language getLanguage(String text) {
+    public Language getLanguage(String text) {
         int germanWordOccurrences = countOccurrences(text, germanWords);
         int englishWordOccurences = countOccurrences(text, englishWords);
    
@@ -64,7 +59,7 @@ public class LanguageDetectionService {
     private List<String> readWords(String fileName) {
         List<String> words = new LinkedList<String>();
         try {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(ClassLoader.getSystemResourceAsStream(fileName)));
+            BufferedReader reader = new BufferedReader(new InputStreamReader(this.getClass().getClassLoader().getResourceAsStream(fileName)));
             String word = reader.readLine();
             while (word != null) {
                 words.add(word);
@@ -72,9 +67,9 @@ public class LanguageDetectionService {
             }
             reader.close();
         } catch (FileNotFoundException ex) {
-            Logger.getLogger(LanguageDetectionService.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(LanguageDetectionService.class.getName()).log(Level.WARNING, null, ex);
         } catch (IOException ex) {
-            Logger.getLogger(LanguageDetectionService.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(LanguageDetectionService.class.getName()).log(Level.WARNING, null, ex);
         }
         return words;
     }

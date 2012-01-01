@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
 import javax.ejb.LocalBean;
 import opennlp.tools.tokenize.Tokenizer;
@@ -21,25 +22,28 @@ import opennlp.tools.tokenize.TokenizerModel;
 @Stateless
 @LocalBean
 public class TokenizerService {
+    
+    
+    
+    private Tokenizer enTokenizer,deTokenizer;
+    
+    @PostConstruct
+    protected void init() throws IOException{
+        enTokenizer = new TokenizerME(new TokenizerModel(this.getClass().getClassLoader().getResourceAsStream("nlpmodels/en-token.bin")));
+        deTokenizer = new TokenizerME(new TokenizerModel(this.getClass().getClassLoader().getResourceAsStream("nlpmodels/de-token.bin")));
+    }
 
     public String[] tokenizeEnglishText(String text) {
-        return tokenize(ClassLoader.getSystemResourceAsStream("nlpmodels/en-token.bin"), text);
+        return tokenize(enTokenizer, text);
     }
 
     public String[] tokenizeGermanText(String text) {
-        return tokenize(ClassLoader.getSystemResourceAsStream("nlpmodels/de-token.bin"), text);
+        return tokenize(deTokenizer, text);
     }
 
-    private String[] tokenize(InputStream modelInputStream, String text) {
+    private String[] tokenize(Tokenizer tokenizer, String text) {
         String[] tokens = new String[0];
-        try {
-            TokenizerModel tokenizerModel = new TokenizerModel(modelInputStream);
-            Tokenizer tokenizer = new TokenizerME(tokenizerModel);
-            tokens = tokenizer.tokenize(text);
-        } catch (IOException ex) {
-            Logger.getLogger(TokenizerService.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            return tokens;
-        }
+        tokens = tokenizer.tokenize(text);
+        return tokens;
     }
 }

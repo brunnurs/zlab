@@ -50,8 +50,8 @@ public class POSTaggingService {
        List<Pair<String, String>> postokens = new LinkedList<Pair<String, String>>();
        String[] sentences = sentenceDetectorService.splitGermantextIntoSentences(text);
        for(String sentence : sentences){
-           String[] tokens = tokenizerService.tokenizeEnglishText(sentence);
-           String[] postags = tag(ClassLoader.getSystemResourceAsStream("nlpmodels/de-pos-maxent.bin"), tokens);
+           String[] tokens = tokenizerService.tokenizeGermanText(sentence);
+           String[] postags = tag(this.getClass().getClassLoader().getResourceAsStream("nlpmodels/de-pos-maxent.bin"), tokens);
            for(int i = 0; i < tokens.length; i++){
                postokens.add(new ImmutablePair<String, String>(tokens[i], postags[i]));
            }

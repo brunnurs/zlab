@@ -4,6 +4,7 @@
  */
 package com.zuehlke.analysis;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -13,6 +14,7 @@ import org.junit.Test;
 public class POSTaggingServiceTest {
     
     @Test
+    @Ignore
     public void testEnglishPOSTagging(){
         final String testTextPlain = "Pierre Vinken, 61 years old, will join the board as a nonexecutive director Nov. 29. Mr. Vinken is chairman of Elsevier N.V., the Dutch publishing group.";
         POSTaggingService posTaggingService = new POSTaggingService();
@@ -23,6 +25,7 @@ public class POSTaggingServiceTest {
     }
     
     @Test
+    @Ignore
     public void testGermanPOSTagging(){
         final String testTextPlain = "";
         POSTaggingService pOSTaggingService = new POSTaggingService();

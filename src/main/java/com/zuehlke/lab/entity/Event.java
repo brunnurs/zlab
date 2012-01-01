@@ -21,9 +21,7 @@ import javax.persistence.ManyToMany;
 @Entity
 public class Event extends Owner implements Serializable {
     private static final long serialVersionUID = 1L;
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    
     private String name;
     private EventType type;
     
@@ -38,14 +36,6 @@ public class Event extends Owner implements Serializable {
     
     public Event(){
         persons = new ArrayList<Person>();
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public List<Person> getPersons() {
