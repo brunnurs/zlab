@@ -9,6 +9,7 @@ import com.zuehlke.lab.entity.Document;
 import com.zuehlke.lab.entity.DocumentSource;
 import com.zuehlke.lab.entity.Keyword;
 import com.zuehlke.lab.entity.Person;
+import com.zuehlke.lab.service.RelevanceService;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -42,12 +43,16 @@ public class ImporterService {
     @EJB
     NLPService nlpService;
     
+    @EJB
+    RelevanceService relevanceService;
+    
     
     @PersistenceContext(name="cloudCompPU")
     EntityManager em;
 
     public void importWordBundle(String filename, byte[] data) throws IOException {
         List<String> texts = getZipEntriesAsText(data);
+        int i = 0;
         for(String text : texts){
             try{
                importWord(text);
@@ -55,7 +60,8 @@ public class ImporterService {
                 System.out.println("Not successfull imported");
                 continue;
             }
-            System.out.println("Successfull imported");
+            i++;
+            System.out.println("Successfull imported "+i);
         }
        
     }
@@ -68,7 +74,12 @@ public class ImporterService {
         doc.setOwner(p);
         //doc.setRawData(text);
         //doc.setSource(DocumentSource.PERSONAL_PROFILE);
-        addKeywords(nlpService.extractTerms(text),doc);
+        
+        LinkedList<Keyword> keywords = getKeywords(nlpService.extractTerms(text));
+        doc.addKeywords(relevanceService.removeWithListedWords(keywords));
+        relevanceService.removeBlackListedWords(keywords);
+        relevanceService.setAutoWithlisted(keywords);
+        doc.addKeywords(keywords);
         em.persist(doc);
     }
 
@@ -97,9 +108,13 @@ public class ImporterService {
     }
     
     
-    private void addKeywords(Map<String,MutableInt> nouns, Document doc){
+    private LinkedList<Keyword> getKeywords(Map<String,MutableInt> nouns){
+        LinkedList<Keyword> retVal =  new LinkedList<Keyword>();
        for(Map.Entry<String,MutableInt> entry : nouns.entrySet()){
-          new Keyword(doc,entry.getKey(), entry.getValue().intValue());
+          retVal.add(new Keyword(entry.getKey(),entry.getValue().intValue()));
        }
+       return retVal;
     }
+    
+    
 }

@@ -79,6 +79,6 @@ public class Keyword implements Serializable{
     }
 
     public void setDocument(Document document) {
-        this.document = document;
+        this.document = document;   
     }
 }

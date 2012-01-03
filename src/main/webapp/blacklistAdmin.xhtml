@@ -2,18 +2,43 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:p="http://primefaces.org/ui">
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
 
     <h:head>
         <title>Importer</title>
     </h:head>
     <h:body>
         <h:form enctype="multipart/form-data">
-            <h:dataTable var="keyword" value="#{blacklistManager.keywords}" varStatus="status">
-                <h:column><h:selectBooleanCheckbox value="#{keyword.blacklisted}"></h:selectBooleanCheckbox></h:column>
-                <h:column>#{keyword.word}</h:column>
-            </h:dataTable>
-            <h:commandButton  value="submit" type="submit" action="#{blacklistManager.handle}" />
+            <p:dataTable var="keyword" value="#{blacklistManager.keywords}" paginator="true" rows="10"  binding="#{blacklistManager.htmlDataTable}"
+                 paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"  
+                 rowsPerPageTemplate="5,10,15" >
+                <f:facet name="header">  
+                    Words
+                </f:facet>
+                <p:column>
+                    <f:facet name="header">
+                        <h:outputText value="key word"/>
+                    </f:facet>
+                    <h:outputText value="#{keyword.word}"/>
+                </p:column>
+                <p:column>
+                    <f:facet name="header">
+                        <h:outputText value="juged by"/>
+                    </f:facet>
+                    <h:outputText rendered="#{keyword.auto}" value="SYSTEM"/>
+                    <h:outputText rendered="#{keyword.user}" value="USER"/>
+                </p:column>
+                <p:column>
+                    
+                    <f:facet name="header">
+                        <h:outputText value="Blacklisted"/>
+                    </f:facet>
+                    <p:selectBooleanCheckbox value="#{keyword.blacklisted}">
+                        <p:ajax event="valueChange" listener="#{blacklistManager.handleChange}"/> 
+                    </p:selectBooleanCheckbox>   
+                </p:column>
+            </p:dataTable>
         </h:form>
     </h:body>
 </html>

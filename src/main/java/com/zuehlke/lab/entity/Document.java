@@ -85,11 +85,10 @@ public class Document implements Serializable {
         return keywordMap.values();
     }
 
-    
-    public void setKeywords(Collection<Keyword> keywords) {
-        this.keywordMap.clear();
+    public void addKeywords(Collection<Keyword> keywords) {
         for(Keyword k : keywords){
             this.keywordMap.put(k.getWord(), k);
+            k.setDocument(this);
         }
     }
     
