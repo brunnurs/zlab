@@ -4,10 +4,14 @@
  */
 package com.zuehlke.lab.entity;
 
+import java.util.LinkedList;
+import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -22,6 +26,13 @@ public class Owner {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     protected int factor;
+    
+    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
+    private List<Document> documents;
+    
+    public Owner(){
+        documents = new LinkedList<Document>();
+    }
 
     public Long getId() {
         return id;
@@ -33,5 +44,18 @@ public class Owner {
     
     public int getFactor(){
         return factor;
+    }
+
+    public List<Document> getDocuments() {
+        return documents;
+    }
+
+    public void setDocuments(List<Document> documents) {
+        this.documents = documents;
+    }
+    
+    public void addDocument(Document doc){
+        this.getDocuments().add(doc);
+        doc.setOwner(this);
     }
 }
