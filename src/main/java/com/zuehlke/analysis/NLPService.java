@@ -28,7 +28,7 @@ public class NLPService {
     @EJB
     private LanguageDetectionService languageDetectionService;
     
-    public Map<String, MutableInt> extractNouns(String text) {
+    public Map<String, MutableInt> extractTerms(String text) {
         List<Pair<String, String>> taggedWords = Collections.EMPTY_LIST;
         
         Language language = languageDetectionService.getLanguage(text);

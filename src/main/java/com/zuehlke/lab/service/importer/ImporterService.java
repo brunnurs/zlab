@@ -68,7 +68,7 @@ public class ImporterService {
         doc.setOwner(p);
         //doc.setRawData(text);
         //doc.setSource(DocumentSource.PERSONAL_PROFILE);
-        addKeywords(nlpService.extractNouns(text),doc);
+        addKeywords(nlpService.extractTerms(text),doc);
         em.persist(doc);
     }
 
