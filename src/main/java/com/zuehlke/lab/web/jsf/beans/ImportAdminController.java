@@ -24,6 +24,6 @@ public class ImportAdminController {
     
     public void uploadWordBundle(FileUploadEvent event) throws IOException{
         System.out.println("test");
-        importService.importWordBundle(event.getFile().getFileName(), event.getFile().getContents());
+        importService.importWordBundle(event.getFile().getContents());
     }
 }

@@ -21,8 +21,7 @@ public class Person extends Owner implements Serializable {
     private static final long serialVersionUID = 1L;
     private String firstname;
     private String lastname;
-    @Lob
-    private String rawdata;
+
 
     public Person() {
         super();
@@ -59,14 +58,4 @@ public class Person extends Owner implements Serializable {
     public void setLastname(String lastname) {
         this.lastname = lastname;
     }
-
-    public String getRawdata() {
-        return rawdata;
-    }
-
-    public void setRawdata(String rawdata) {
-        this.rawdata = rawdata;
-    }
-    
-
 }

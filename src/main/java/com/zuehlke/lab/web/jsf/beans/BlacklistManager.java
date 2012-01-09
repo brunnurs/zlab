@@ -12,8 +12,8 @@ import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.enterprise.context.RequestScoped;
 import javax.faces.bean.ManagedBean;
-import javax.faces.component.html.HtmlDataTable;
 import javax.faces.event.AjaxBehaviorEvent;
+import javax.faces.model.SelectItem;
 import org.primefaces.component.datatable.DataTable;
 import org.primefaces.component.selectbooleancheckbox.SelectBooleanCheckbox;
 
@@ -34,11 +34,9 @@ public class BlacklistManager implements Serializable {
         
         private RelevanceStatus status;
         private String word;
-        private int index;
 
-        public KeywordSelection(String word,RelevanceStatus status, int index) {
+        public KeywordSelection(String word,RelevanceStatus status) {
            this.word = word;
-           this.index = index;
            this.status = status;
         }
 
@@ -65,13 +63,9 @@ public class BlacklistManager implements Serializable {
                 status = RelevanceStatus.WITHLISTED;
             }
          }
-
-        public int getIndex() {
-            return index;
-        }
-
-        public void setIndex(int index) {
-            this.index = index;
+         
+        public String getJuged(){
+           return (status == RelevanceStatus.AUTO_BLACKLISTED || status == RelevanceStatus.AUTO_WITHLISTED)? "SYSTEM" : "USER";
         }
     }
  
@@ -91,7 +85,7 @@ public class BlacklistManager implements Serializable {
         keywords = new ArrayList<KeywordSelection>();
         int i = 0;
         for(RelevanceWord k : relevanceService.getRelevanceWords()){
-            keywords.add(new KeywordSelection(k.getWord(),k.getStatus(),i));
+            keywords.add(new KeywordSelection(k.getWord(),k.getStatus()));
             i++;
         }
     }
@@ -105,8 +99,14 @@ public class BlacklistManager implements Serializable {
     }
     
     public void handleChange(AjaxBehaviorEvent event){
-        Object value = ((SelectBooleanCheckbox) event.getSource()).getValue();
+        boolean  value = (Boolean)(((SelectBooleanCheckbox) event.getSource()).getValue());
         KeywordSelection word = (KeywordSelection) htmlDataTable.getRowData();
+        List data = htmlDataTable.getFilteredData();
+        if(value == true){
+            relevanceService.setUserBlacklisted(word.getWord());
+        }else{
+            relevanceService.setUserWithlisted(word.getWord());
+        }
     }
 
     public DataTable getHtmlDataTable() {
@@ -117,7 +117,16 @@ public class BlacklistManager implements Serializable {
         this.htmlDataTable = htmlDataTable;
     }
     
-    public void onRowSelect(){
-         KeywordSelection word = (KeywordSelection) htmlDataTable.getRowData();
+    public SelectItem[] getJugedOption(){
+        SelectItem[] options = new SelectItem[3];  
+  
+        options[0] = new SelectItem("", "SELECT");
+        options[1] = new SelectItem("SYSTEM", "SYSTEM");
+        options[2] = new SelectItem("USER", "USER");
+        
+        return options; 
     }
+
+    
+    
 }
