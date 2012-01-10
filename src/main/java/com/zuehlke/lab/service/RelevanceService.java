@@ -19,7 +19,6 @@ import com.zuehlke.lab.entity.RelevanceWord;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
-import java.util.Set;
 
 /**
  *
@@ -39,7 +38,6 @@ public class RelevanceService {
     private void loadRelevanceList(){
        Query q = em.createNamedQuery("RelevanceWord.findAll",RelevanceWord.class);
        relevanceMap = new HashMap<String, RelevanceStatus>();
-       
        for(RelevanceWord word : (List<RelevanceWord>)q.getResultList()){
            relevanceMap.put(word.getWord(), word.getStatus());
        } 

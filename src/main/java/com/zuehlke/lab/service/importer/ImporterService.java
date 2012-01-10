@@ -53,12 +53,20 @@ public class ImporterService {
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     private void importWord(String rawData, String firstname, String lastname){
                 Document doc = new Document();
-                doc.setRawData(rawData);
+                //doc.setRawData(rawData);
                 LinkedList<Keyword> keywords = getKeywords(nlpService.extractTerms(rawData));
-                doc.addKeywords(relevanceService.removeWithListedWords(keywords));
+                
+                for(Keyword keyword : relevanceService.removeWithListedWords(keywords)){
+                    keyword.setDocument(doc);
+                    doc.addKeyword(keyword);
+                }
                 relevanceService.removeBlackListedWords(keywords);
                 relevanceService.setAutoWithlisted(keywords);
-                doc.addKeywords(keywords);
+                
+                for(Keyword keyword : keywords){
+                    keyword.setDocument(doc);
+                    doc.addKeyword(keyword);
+                }
                 personService.saveDocumentToUser(doc, firstname, lastname);
     }
 
@@ -82,7 +90,7 @@ public class ImporterService {
                 
                 String rawData = "";
                 if(nameSurnamePrefix[2].equals("doc")){
-                    //rawData = getWordDocContentByRawData(outputStream.toByteArray());
+                    rawData = getWordDocContentByRawData(outputStream.toByteArray());
                 }else if(nameSurnamePrefix[2].equals("docx")){
                     rawData = getWordDocxContentByRawData(outputStream.toByteArray());
                 }else{
@@ -118,7 +126,6 @@ public class ImporterService {
      * @throws IllegalArgumentException 
      */
     private String[] filterFirstnameLastNameByFilename(String filename) throws IllegalArgumentException {
-
             String[] lastnameFirstName = filename.split("(_|\\.)");
             if(lastnameFirstName.length == 3){
                 return lastnameFirstName;
@@ -128,7 +135,7 @@ public class ImporterService {
     }
     
     private LinkedList<Keyword> getKeywords(Map<String,MutableInt> nouns){
-        LinkedList<Keyword> retVal =  new LinkedList<Keyword>();
+       LinkedList<Keyword> retVal =  new LinkedList<Keyword>();
        for(Map.Entry<String,MutableInt> entry : nouns.entrySet()){
           retVal.add(new Keyword(entry.getKey(),entry.getValue().intValue()));
        }
