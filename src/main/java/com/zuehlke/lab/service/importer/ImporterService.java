@@ -7,7 +7,6 @@ package com.zuehlke.lab.service.importer;
 import com.zuehlke.analysis.NLPService;
 import com.zuehlke.lab.entity.Document;
 import com.zuehlke.lab.entity.Keyword;
-import com.zuehlke.lab.entity.Person;
 import com.zuehlke.lab.service.RelevanceService;
 import com.zuehlke.lab.service.PersonService;
 import java.io.ByteArrayInputStream;
@@ -17,6 +16,7 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
+import javax.ejb.Asynchronous;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.ejb.LocalBean;
@@ -70,6 +70,7 @@ public class ImporterService {
                 personService.saveDocumentToUser(doc, firstname, lastname);
     }
 
+    @Asynchronous
     public void importWordBundle(byte[] data) throws IOException {
         ZipInputStream wordFilesAsStream = new ZipInputStream(new ByteArrayInputStream(data));
         ByteArrayOutputStream outputStream = null;
@@ -104,6 +105,8 @@ public class ImporterService {
                 System.out.println("Could not get rawdata for [" + entry.getName() + "]. Reason was:" + ex.getStackTrace());
             }
         }
+        System.out.println("Update relevance word count.");
+        relevanceService.updateCount();
         System.out.println("Successfull imported");
     }
 

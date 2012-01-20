@@ -26,7 +26,7 @@
                    Founded Words:
                 </f:facet>
                 <p:column id="word" filterBy="#{keyword.word}" headerText="word"  filterMatchMode="contains">  
-                    <h:outputText value="#{keyword.word}"/>
+                    <h:outputText value="#{keyword.word}(#{keyword.count})"/>
                 </p:column>
                 <p:column id="jug" headerText="juged by" filterBy="#{keyword.juged}" filterOptions="#{blacklistManager.jugedOption}"  filterMatchMode="exact">
                     <h:outputText id="option" value="#{keyword.juged}"/>
