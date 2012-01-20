@@ -43,7 +43,7 @@ public class CloudManager implements Serializable {
     public Cloud getCloud() {
         
 //        if(cloud == null){
-          return  cloud = cloudService.getCloud();//getRecursiveCloud(Arrays.asList(new SearchAttribute[]{SearchAttribute.TECHNOLOGY}));
+          return  cloud = cloudService.getCloudAggregated();//getRecursiveCloud(Arrays.asList(new SearchAttribute[]{SearchAttribute.TECHNOLOGY}));
 //        }
         //return cloud;
         

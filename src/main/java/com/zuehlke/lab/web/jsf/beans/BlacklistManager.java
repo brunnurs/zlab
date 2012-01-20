@@ -89,6 +89,7 @@ public class BlacklistManager implements Serializable {
  
     private static final long serialVersionUID = 1L;
     private List<KeywordSelection> keywords;
+    private int lastViewedIndex;
     private DataTable htmlDataTable;
     
     @EJB
@@ -136,12 +137,10 @@ public class BlacklistManager implements Serializable {
     }
     
     public SelectItem[] getJugedOption(){
-        SelectItem[] options = new SelectItem[3];  
-  
+        SelectItem[] options = new SelectItem[3];
         options[0] = new SelectItem("", "SELECT");
         options[1] = new SelectItem("SYSTEM", "SYSTEM");
         options[2] = new SelectItem("USER", "USER");
-        
         return options; 
     }
 

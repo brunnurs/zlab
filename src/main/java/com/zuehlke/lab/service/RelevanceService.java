@@ -138,9 +138,9 @@ public class RelevanceService {
     }
 
     public void updateCount(){
-        Query q = em.createNativeQuery("UPDATE RelevanceWord as rw SET rw.count= (SELECT SUM(k.COUNT) FROM KEYWORD k WHERE rw.WORD = k.WORD )");
-        q.executeUpdate();
-        em.clear();
-        loadRelevanceList();
+//        Query q = em.createNativeQuery("UPDATE RelevanceWord as rw SET Count = (SELECT SUM(k.COUNT) FROM KEYWORD k WHERE rw.WORD = k.WORD )");
+//        q.executeUpdate();
+//        em.clear();
+//        loadRelevanceList();
     }    
 }
