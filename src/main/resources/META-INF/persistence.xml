@@ -8,26 +8,4 @@
       <property name="eclipselink.ddl-generation" value="create-tables"/>
     </properties>
   </persistence-unit>
-  <persistence-unit name="wikipediaPU" transaction-type="JTA">
-    <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
-    <jta-data-source>jdbc/sample</jta-data-source>
-    <exclude-unlisted-classes>false</exclude-unlisted-classes>
-    <properties>
-      <property name="eclipselink.ddl-generation" value="drop-and-create-tables"/>
-      <property name="eclipselink.jdbc.password" value=""/>
-      <property name="eclipselink.jdbc.user" value="root"/>
-      <property name="eclipselink.jdbc.driver" value="com.mysql.jdbc.Driver"/>
-      <property name="eclipselink.jdbc.url" value="jdbc:mysql://localhost:3306/test"/>
-      <property name="eclipselink.ddl-generation" value="drop-and-create-tables"/>
-      <property name="eclipselink.logging.level" value="INFO"/>
-      <properties>
-        <property name="eclipselink.jdbc.password" value=""/>
-        <property name="eclipselink.jdbc.user" value="root"/>
-        <property name="eclipselink.jdbc.driver" value="com.mysql.jdbc.Driver"/>
-        <property name="eclipselink.jdbc.url" value="jdbc:mysql://localhost:3306/test"/>
-        <property name="eclipselink.ddl-generation" value="drop-and-create-tables"/>
-        <property name="eclipselink.logging.level" value="INFO"/>
-      </properties>
-    </properties>
-  </persistence-unit>
 </persistence>
