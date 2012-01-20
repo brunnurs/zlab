@@ -47,6 +47,7 @@ public class YammerReaderTest {
     }
     
     @Test
+    @Ignore
     public void simpleUnmarshalling(){
         try {
             JAXBContext context = JAXBContext.newInstance(YammerUser.class);
