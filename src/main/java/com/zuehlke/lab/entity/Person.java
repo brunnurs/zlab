@@ -21,6 +21,7 @@ public class Person extends Owner implements Serializable {
     private static final long serialVersionUID = 1L;
     private String firstname;
     private String lastname;
+    
 
 
     public Person() {

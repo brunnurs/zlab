@@ -2,7 +2,8 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:p="http://primefaces.org/ui">
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:jdjndc="http://javaserverfaces.dev.java.net/demo/custom-taglib">
 
     <h:head>
         <title>Importer</title>
@@ -15,6 +16,10 @@
                           sizeLimit="2000000000"
                           fileLimit="1"
                           allowTypes="/(\.|\/)(doc|docx|zip)$/"/>
+        </h:form>
+            
+        <h:form>
+            <h:commandButton actionListener="#{importAdminController.importYammerUsers}" value="Import yammer users"/>
         </h:form>
     </h:body>
 </html>
