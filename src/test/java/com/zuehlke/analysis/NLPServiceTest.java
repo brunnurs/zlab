@@ -35,6 +35,7 @@ public class NLPServiceTest {
         LanguageDetectionService languageDetectionService = new LanguageDetectionService();
         
         NLPService nLPService = new NLPService();
+        nLPService.init();
         nLPService.setPosTaggingService(posTaggingService);
         nLPService.setLanguageDetectionService(languageDetectionService);
         
