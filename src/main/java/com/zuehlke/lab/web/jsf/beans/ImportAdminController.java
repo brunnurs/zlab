@@ -23,7 +23,10 @@ public class ImportAdminController {
     ImporterService importService;
     
     public void uploadWordBundle(FileUploadEvent event) throws IOException{
-        System.out.println("test");
         importService.importWordBundle(event.getFile().getContents());
+    }
+    
+    public void importYammerUsers(){
+        
     }
 }
