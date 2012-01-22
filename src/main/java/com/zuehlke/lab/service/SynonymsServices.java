@@ -73,31 +73,31 @@ public class SynonymsServices {
     }
     
     public void addSynonym(String word, String synonym){
-        Query q = em.createQuery("SELECT doc FROM Document doc, IN(doc.keywords) k WHERE k.word = :word", Document.class);
-        q.setParameter("word", word);
-        List<Document> docs = q.getResultList();
-        for(Document doc : docs){
-            Keyword k = doc.getKeyword(word);
-            Keyword sy = doc.getKeyword(synonym);
-            
-            if(sy == null){
-                sy = new Keyword(synonym, k.getCount());
-                em.persist(sy);
-                doc.addKeyword(sy);
-            }else{
-                sy.setCount(sy.getCount() + k.getCount());
-            }
-            doc.removeKeyword(word);
-            em.remove(k);
-        }
-        em.flush();
-        
-        String sql = "INSERT INTO Synonym values ('"+word+"','"+synonym+"')";
-        System.out.println(sql);
-        
-        q = em.createNativeQuery(sql);
-        q.executeUpdate();
-        
-        synonyms.put(word,synonym);
+//        Query q = em.createQuery("SELECT doc FROM Document doc, IN(doc.keywords) k WHERE k.word = :word", Document.class);
+//        q.setParameter("word", word);
+//        List<Document> docs = q.getResultList();
+//        for(Document doc : docs){
+//            Keyword k = doc.getKeyword(word);
+//            Keyword sy = doc.getKeyword(synonym);
+//            
+//            if(sy == null){
+//                sy = new Keyword(synonym, k.getCount());
+//                em.persist(sy);
+//                doc.addKeyword(sy);
+//            }else{
+//                sy.setCount(sy.getCount() + k.getCount());
+//            }
+//            doc.removeKeyword(word);
+//            em.remove(k);
+//        }
+//        em.flush();
+//        
+//        String sql = "INSERT INTO Synonym values ('"+word+"','"+synonym+"')";
+//        System.out.println(sql);
+//        
+//        q = em.createNativeQuery(sql);
+//        q.executeUpdate();
+//        
+//        synonyms.put(word,synonym);
     }
 }

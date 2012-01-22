@@ -4,14 +4,22 @@
  */
 package com.zuehlke.lab.service.importer;
 
+import au.com.bytecode.opencsv.CSVReader;
 import com.zuehlke.analysis.NLPService;
 import com.zuehlke.lab.entity.Document;
+import com.zuehlke.lab.entity.DocumentSource;
 import com.zuehlke.lab.entity.Keyword;
+import com.zuehlke.lab.entity.Person;
+import com.zuehlke.lab.entity.Unit;
 import com.zuehlke.lab.service.RelevanceService;
 import com.zuehlke.lab.service.PersonService;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.zip.ZipEntry;
@@ -52,23 +60,40 @@ public class ImporterService {
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     private void importWord(String rawData, String firstname, String lastname){
-                Document doc = new Document();
-                //doc.setRawData(rawData);
-                LinkedList<Keyword> keywords = getKeywords(nlpService.extractTerms(rawData));
-                
+               Document doc = new Document();
+               doc.setRawData(rawData);
+               doc.setSource(DocumentSource.PERSONAL_PROFILE);
+               personService.saveDocumentToUser(doc, firstname, lastname);
+    }
+    
+    private void analyseDocument(Document doc){
+                LinkedList<Keyword> keywords = getKeywords(nlpService.extractTerms(doc.getRawData()));
                 for(Keyword keyword : relevanceService.removeWithListedWords(keywords)){
                     keyword.setDocument(doc);
                     doc.addKeyword(keyword);
+                    em.persist(keyword);
                 }
                 relevanceService.removeBlackListedWords(keywords);
                 relevanceService.setAutoWithlisted(keywords);
-                
                 for(Keyword keyword : keywords){
                     keyword.setDocument(doc);
                     doc.addKeyword(keyword);
+                    em.persist(keyword);
                 }
-                personService.saveDocumentToUser(doc, firstname, lastname);
+                
     }
+    
+    @Asynchronous
+    public void analyseDocuments(){
+        System.out.print("Analyse documents");
+        for(Document doc : em.createNamedQuery("Document.findAll", Document.class).getResultList()){
+            analyseDocument(doc);
+            System.out.print(".");
+        }
+        System.out.println("finish!");
+    }
+    
+    
 
     @Asynchronous
     public void importWordBundle(byte[] data) throws IOException {
@@ -143,5 +168,31 @@ public class ImporterService {
           retVal.add(new Keyword(entry.getKey(),entry.getValue().intValue()));
        }
        return retVal;
+    }
+    
+    
+    public void updatePerson() throws FileNotFoundException, IOException{
+        Map<String,Unit> units = new HashMap<String, Unit>();
+        
+        for(Unit unit : em.createNamedQuery("Unit.findAll", Unit.class).getResultList()){
+            units.put(unit.getName(), unit);
+        }
+        
+        InputStream data = this.getClass().getClassLoader().getResourceAsStream("persons.csv");
+        CSVReader reader = new CSVReader(new InputStreamReader(data),',');
+        String [] nextLine;
+        while ((nextLine = reader.readNext()) != null) {
+            int i = nextLine[0].lastIndexOf(' ');
+            String fname = nextLine[0].substring(i+1), lname = nextLine[0].substring(0, i);
+            Person p = new Person(fname, lname);
+            em.persist(p);
+            Unit unit = units.get(nextLine[1]);
+            if(unit == null){
+                unit = new Unit(nextLine[1]);
+                em.persist(unit);
+            }
+            units.put(unit.getName(),unit);
+            unit.addPerson(p);
+        }
     }
 }

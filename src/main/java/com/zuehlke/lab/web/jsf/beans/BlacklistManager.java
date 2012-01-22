@@ -5,6 +5,7 @@ import com.zuehlke.lab.entity.RelevanceStatus;
 import com.zuehlke.lab.entity.RelevanceWord;
 import com.zuehlke.lab.service.RelevanceService;
 import com.zuehlke.lab.service.CloudService;
+import com.zuehlke.lab.service.importer.ImporterService;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -94,6 +95,9 @@ public class BlacklistManager implements Serializable {
     
     @EJB
     RelevanceService relevanceService;
+    
+    @EJB
+    ImporterService importerService;
 	
     
     @EJB

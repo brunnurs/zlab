@@ -20,7 +20,7 @@ import com.zuehlke.lab.entity.Person;
 import com.zuehlke.lab.entity.view.ReadOnlyKeyword;
 import java.text.CharacterIterator;
 import java.text.StringCharacterIterator;
-import java.util.regex.Pattern;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  *
@@ -56,7 +56,7 @@ public class CloudService {
             for(Cloud element : innnerClouds){
                 values.add(keys.get(i).getKey());
                 actParameters.add(parameters.get(pos));
-                    addRecursiveCloud(element, parameters, actParameters, values, pos+1);
+                addRecursiveCloud(element, parameters, actParameters, values, pos+1);
                 values.remove(pos);
                 actParameters.remove(pos);
                 i++;
@@ -72,7 +72,7 @@ public class CloudService {
     
     private List<ExtendedReadOnlyKeyword> getKeywords(List<SearchAttribute> parameters, List<Object> values, SearchAttribute select){
         String sql = "SELECT k."+select.getSearchColumn()+" as id, k."+select.getSelectColumn()+" as word, SUM(k.count) as count FROM UNIT_SELECT_PERSON_AGG_KEYWORD as k ";
-        if(parameters != null && parameters.size() > 0){
+        if(parameters != null && parameters.size() > 0 && parameters.get(parameters.size()-1) != null){
             sql += "WHERE ";
             int i = 0;
             for(SearchAttribute as : parameters){
@@ -81,14 +81,18 @@ public class CloudService {
               if(values.get(i) instanceof String)sql += "'";
                       sql += String.valueOf(values.get(i));
               if(values.get(i) instanceof String)sql += "'";
-              if(i < parameters.size()-1) sql += "AND ";
+              sql += " AND ";
               i++;
             }
+            sql+= "k."+select.getSelectColumn()+" IS NOT NULL";
          }
-        sql += " GROUP BY k."+select.getSelectColumn()+", k."+select.getSearchColumn();
+        sql += " GROUP BY k."+select.getSelectColumn()+", k."+select.getSearchColumn()+" ORDER BY count DESC";
         
        System.out.print(sql);
        Query q = em.createNativeQuery(sql);
+       if(select.getMaxCount() > 0){
+            q.setMaxResults(select.getMaxCount());
+       }
        BeanResult.setQueryResultClass(q, ExtendedReadOnlyKeyword.class);
        return q.getResultList();
     }
@@ -123,9 +127,9 @@ public class CloudService {
        List<List<Keyword>> underlyingKeywords = new ArrayList<List<Keyword>>();
        for(Keyword keyword : keywords){
            String escaped = escapeForRegex(keyword.getWord());
-           q = em.createNativeQuery("SELECT * FROM AGG_KEYWORD WHERE WORD ~* ?1 AND NOT WORD ~ ?2");
+           q = em.createNativeQuery("SELECT * FROM AGG_KEYWORD WHERE WORD ~* ?1 ORDER BY COUNT DESC");
+           q.setMaxResults(100);
            q.setParameter(1, ".*"+escaped+".*");
-           q.setParameter(2, escaped);
            BeanResult.setQueryResultClass(q, ReadOnlyKeyword.class);
            underlyingKeywords.add(q.getResultList());
        }
