@@ -32,9 +32,9 @@ public class DocumentAnalysisService {
     @EJB
     RelevanceService relevanceService;
 
-    public void analyseDocument(Document doc) {
+    public void analyzeDocument(Document doc) {
         List<Keyword> keywords = getKeywords(nlpService.extractTerms(doc.getRawData()));
-        for (Keyword keyword : relevanceService.removeWithListedWords(keywords)) {
+        for (Keyword keyword : relevanceService.extractWithListedWords(keywords)) {
             keyword.setDocument(doc);
             doc.addKeyword(keyword);
             entityManager.persist(keyword);

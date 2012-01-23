@@ -6,11 +6,9 @@ package com.zuehlke.lab.service.importer;
 
 import com.zuehlke.analysis.DocumentAnalysisService;
 import com.zuehlke.lab.entity.Document;
-import com.zuehlke.lab.entity.Keyword;
 import com.zuehlke.lab.entity.Person;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
@@ -18,21 +16,14 @@ import javax.ejb.LocalBean;
 import javax.ejb.Stateful;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
+import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import org.apache.commons.lang3.mutable.MutableInt;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
-import org.scribe.builder.ServiceBuilder;
-import org.scribe.builder.api.YammerApi;
-import org.scribe.model.OAuthRequest;
-import org.scribe.model.Response;
-import org.scribe.model.Token;
-import org.scribe.model.Verb;
-import org.scribe.oauth.OAuthService;
 
 /**
  *
@@ -46,9 +37,9 @@ public class YammerImporterService {
     EntityManager entityManager;
     @EJB
     DocumentAnalysisService documentAnalysisService;
-    private final long WEBSERVICE_TIMEOUT = 30000;
-    OAuthService service = new ServiceBuilder().provider(YammerApi.class).apiKey("kvl0i1Cue7AvlBhE5VjEQ").apiSecret("X3ugswFmUVhFr38Usy5A4FtOWZg9vkQqEa8dPRhpHQ").build();
-    Token accessToken = new Token("MNu9aicIIbT0g8pZ9VChkQ", "OmSz5PJpl8Qh7x7fEB6zc3bBd4hBS63ce41iRGThFxU");
+    @Inject
+    YammerRESTClient yammerRESTClient;
+   
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public void insertYammerIds() {
@@ -65,11 +56,6 @@ public class YammerImporterService {
         List<Person> persons = entityManager.createNamedQuery("Person.findAll", Person.class).getResultList();
         for (Person person : persons) {
             if (person.getYammerId() != null && person.getYammerId() > 0) {
-                try {
-                    Thread.sleep(WEBSERVICE_TIMEOUT);
-                } catch (InterruptedException ex) {
-                    Logger.getLogger(YammerImporterService.class.getName()).log(Level.SEVERE, null, ex);
-                }
                 importPosts(person);
             }
         }
@@ -77,7 +63,7 @@ public class YammerImporterService {
 
     private void importPosts(Person person) {
         try {
-            JSONArray messages = retrievePosts(person.getYammerId());
+            JSONArray messages = yammerRESTClient.retrievePosts(person.getYammerId());
             for (int i = 0; i < messages.length(); i++) {
                 JSONObject message = messages.getJSONObject(i);
                 String text = message.getJSONObject("body").getString("plain");
@@ -85,7 +71,7 @@ public class YammerImporterService {
                 document.setRawData(text);
                 document.setOwner(person);
                 person.addDocument(document);
-                documentAnalysisService.analyseDocument(document);
+                documentAnalysisService.analyzeDocument(document);
             }
         } catch (JSONException ex) {
             Logger.getLogger(YammerImporterService.class.getName()).log(Level.SEVERE, null, ex);
@@ -117,7 +103,7 @@ public class YammerImporterService {
             boolean all = false;
             int page = 1;
             while (!all) {
-                JSONArray jSONArray = retrieveUsers(page);
+                JSONArray jSONArray = yammerRESTClient.retrieveUsers(page);
 
                 for (int i = 0; i < jSONArray.length(); i++) {
                     ids.add(new ImmutablePair<String, Long>(jSONArray.getJSONObject(i).getString("full_name"), jSONArray.getJSONObject(i).getLong("id")));
@@ -128,13 +114,6 @@ public class YammerImporterService {
                     System.out.println(jSONArray.length() + " retrieved for page=" + page);
                     page++;
                 }
-                if (!all) {
-                    try {
-                        Thread.sleep(WEBSERVICE_TIMEOUT);
-                    } catch (InterruptedException ex) {
-                        Logger.getLogger(YammerImporterService.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                }
             }
         } catch (JSONException ex) {
             Logger.getLogger(YammerImporterService.class.getName()).log(Level.SEVERE, null, ex);
@@ -142,24 +121,7 @@ public class YammerImporterService {
         return ids;
     }
 
-    private JSONArray retrievePosts(long userId) throws JSONException {
-        String requestString = "https://www.yammer.com/api/v1/messages/from_user/" + userId + ".json";
-        OAuthRequest request = new OAuthRequest(Verb.GET, requestString);
-        service.signRequest(accessToken, request);
-        Response response = request.send();
-        JSONObject jSONObject = new JSONObject(response.getBody());
-        return jSONObject.getJSONArray("messages");
-    }
-
-    private JSONArray retrieveUsers(int page) throws JSONException {
-        String pageParam = "?page=" + String.valueOf(page);
-        OAuthRequest request = new OAuthRequest(Verb.GET, "https://www.yammer.com/api/v1/users.json" + pageParam);
-        service.signRequest(accessToken, request);
-        Response response = request.send();
-        return new JSONArray(response.getBody());
-    }
-
-    public final static String deAccent(String input) {
+    private String deAccent(String input) {
         final StringBuilder output = new StringBuilder();
         for (int i = 0; i < input.length(); i++) {
             switch (input.charAt(i)) {

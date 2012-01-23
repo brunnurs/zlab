@@ -73,7 +73,7 @@ public class ImporterService {
     public void analyseDocuments(){
         System.out.print("Analyse documents");
         for(Document doc : em.createNamedQuery("Document.findAll", Document.class).getResultList()){
-            documentAnalysisService.analyseDocument(doc);
+            documentAnalysisService.analyzeDocument(doc);
             System.out.print(".");
         }
         System.out.println("finish!");
