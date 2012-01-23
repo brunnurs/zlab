@@ -22,47 +22,47 @@ import static org.hamcrest.Matchers.*;
  * @author user
  */
 public class WikiReaderTest {
-    ArticleImporterService reader;
+    WikiReader reader;
     
     @Before
     public void setUp(){
-        reader = new ArticleImporterService();
+        reader = new WikiReader();
     }
     
     public WikiReaderTest() {
     }
     
-//    @Test
-//    public void testImportWithTestData(){
-//        //**** prepare ****
-//        reader.setDataInputStream(getClass().getClassLoader().getResourceAsStream("wikitestdata/test_article_categories.nt"));
-//        
-//        //**** action ****
-//        reader.importATranche();
-//        
-//        //**** verify ****
-//        assertThat(reader.getAllCategories().containsKey("Autism"), is(true));
-//        assertThat(reader.getAllCategories().containsKey("Defenders_of_slavery"), is(true));
-//        
-//        assertThat(reader.getArticleCategories().containsKey("Aristotle"), is(true));
-//        
-//        List<WikiCategory> aristotelesCategories = reader.getArticleCategories().get("Aristotle");
-//        assertThat(aristotelesCategories.size(), is(20));
-//        System.out.println(aristotelesCategories);
-//    }
+    @Test
+    public void testReadArticleFileWithTestData(){
+        //**** prepare ****
+        reader.setDataInputStream(getClass().getClassLoader().getResourceAsStream("wikitestdata/test_article_categories.nt"));
+        
+        //**** action ****
+        reader.readArticleFileBufferd();
+        
+        //**** verify ****
+        assertThat(reader.getAllCategories().containsKey("Autism"), is(true));
+        assertThat(reader.getAllCategories().containsKey("Defenders_of_slavery"), is(true));
+        
+        assertThat(reader.getArticleCategories().containsKey("Aristotle"), is(true));
+        
+        List<WikiCategory> aristotelesCategories = reader.getArticleCategories().get("Aristotle");
+        assertThat(aristotelesCategories.size(), is(20));
+        System.out.println(aristotelesCategories);
+    }
     
-//    @Test
-//    @Ignore
-//    public void testReadArticleFileWithRealData() throws FileNotFoundException, Throwable{
-//        //**** prepare ****
-//        reader.setMaxReadLines(20000000);
-//        reader.setDataInputStream(new FileInputStream(new File("/home/user/Downloads/article_categories_en.nt")));
-//        
-//        //**** action ****
-//        reader.importATranche();
-//        
-//        //**** verify ****
-//        System.out.println("Article-Count: " +reader.getArticleCategories().size());
-//        System.out.println("Category-Count: " +reader.getAllCategories().size());
-//    }
+    @Test
+    @Ignore
+    public void testReadArticleFileWithRealData() throws FileNotFoundException, Throwable{
+        //**** prepare ****
+        reader.setMaxReadLines(20000000);
+        reader.setDataInputStream(new FileInputStream(new File("/home/user/Downloads/article_categories_en.nt")));
+        
+        //**** action ****
+        reader.readArticleFileBufferd();
+        
+        //**** verify ****
+        System.out.println("Article-Count: " +reader.getArticleCategories().size());
+        System.out.println("Category-Count: " +reader.getAllCategories().size());
+    }
 }

@@ -10,42 +10,20 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import javax.annotation.PostConstruct;
-import javax.ejb.Singleton;
-import javax.inject.Inject;
 
 /**
  *
  * @author user
  */
-@Singleton(mappedName="wikiCategoryImporter", name="wikiCategoryImporter")
-/**
- * This Singleton is used to import Categories first from a file and, if it's imported into the database, it supports a single entry-point to access
- * the whole category-graph which is loaded on start
- */
-public class WikiCategoryImporterService {
+public class CategoryImporterService {
 
-    @Inject 
-    WikiCategoryFacade categoryFacade;
-    
-    private Map<String, WikiCategory> allCategories = new HashMap<String, WikiCategory>();
-    
     public final static String preCategory = "<http://dbpedia.org/resource/Category:";
     public final static String keywordBeforeParent = "#broader";
+    private Map<String, WikiCategory> allCategories = new HashMap<String, WikiCategory>();
     private InputStream dataInputStream;
     private long maxReadLines = 1000;
 
-    @PostConstruct
-    public void loadCategoryGraphFromDB(){
-        List<WikiCategory> allCategoriesFromDb = categoryFacade.findAll();
-        for(WikiCategory cat : allCategoriesFromDb){
-            allCategories.put(cat.getDescription(), cat);
-        }
-        categoryFacade.getEntityManager().clear();
-    }
-    
     public void importCategoryGraph() {
 
         String currentLine = "";
