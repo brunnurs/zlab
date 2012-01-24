@@ -25,14 +25,15 @@ public class PersonService {
     EntityManager em;
 
     public void saveDocumentToUser(Document doc, String firstname, String lastname){
-        String queryString = "select p from Person p WHERE p.firstname = :firstname AND p.lastname = :lastname";
-        TypedQuery<Person> query = em.createQuery(queryString, Person.class);
+        
+        TypedQuery<Person> query = em.createNamedQuery("Person.findByName", Person.class);
         query.setParameter("firstname", firstname );
         query.setParameter("lastname", lastname);
         
         List<Person> result = query.getResultList();
         Person p = null;
         if(result.isEmpty()){
+            System.err.println("Can't find the person!"); 
             p = new Person();
             p.setFirstname(firstname);
             p.setLastname(lastname);
@@ -43,7 +44,7 @@ public class PersonService {
             p.getDocuments().clear();
             p.addDocument(doc);
         }else{
-          System.out.println("Person ["+p.getFirstname()+","+p.getLastname()+"] seems to be ambiguous"); 
+          System.err.println("Person ["+firstname+","+lastname+"] seems to be ambiguous"); 
         }
     }
 }

@@ -11,6 +11,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 
 /**
@@ -18,6 +20,9 @@ import javax.persistence.OneToMany;
  * @author user
  */
 @Entity
+@NamedQueries({
+    @NamedQuery(name = "Unit.findAll", query = "SELECT u FROM Unit u")
+    })
 public class Unit implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id

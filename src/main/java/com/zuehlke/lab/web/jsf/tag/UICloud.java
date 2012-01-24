@@ -42,19 +42,10 @@ public class UICloud extends UIComponentBase{
    
            ResponseWriter responseWriter = context.getResponseWriter();
            
-           writeScriptTag(responseWriter);
-           
            Cloud model = (Cloud)getAttributes().get("model");
            
            writeCanvas(responseWriter,context, model);
            writeScript(responseWriter,getClientId(context),model.getId(),model.getLabel());
-       }
-        
-       private void writeScriptTag(ResponseWriter writer) throws IOException{
-           writer.startElement("script", null);
-           writer.writeAttribute("src", "tagcanvas.js", null);
-           writer.writeAttribute("type", "text/javascript", null);
-           writer.endElement("script");
        }
        
        private void writeScript(ResponseWriter writer,String id, int cloudId, String cloudLable) throws IOException{
@@ -93,9 +84,7 @@ public class UICloud extends UIComponentBase{
           writer.write("TagCanvas.Start('"+id+"','tags_"+cloudId+"');\n");
           writer.write("} catch(e) {// something went wrong, hide the canvas container\n document.getElementById('"+id+"').style.display = 'none';}\n");
           writer.write("};\n");
-          writer.write("function switchCloud(id,label) {TagCanvas.Start('"+id+"','tags_'+id); document.getElementById('title_"+id+"').innerHTML = label; changePath(id,label); return false;");
-//          writer.write( "var body = document.getElementById('body');"
-//                  + "body.");       
+          writer.write("function switchCloud(id,label) {TagCanvas.Start('"+id+"','tags_'+id); document.getElementById('title_"+id+"').innerHTML = label; changePath(id,label); return false;");    
           writer.write( "}\n");
           writer.write("function changePath(id,label) { var found = (-1); for (var i = 0; i < path.length; ++i){if(path[i][0] == id){found = i}}\n");
           writer.write("if(found == (-1)){path.push(new Array(id,label))}\n");

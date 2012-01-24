@@ -5,6 +5,7 @@ import com.zuehlke.lab.entity.RelevanceStatus;
 import com.zuehlke.lab.entity.RelevanceWord;
 import com.zuehlke.lab.service.RelevanceService;
 import com.zuehlke.lab.service.CloudService;
+import com.zuehlke.lab.service.importer.ImporterService;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,10 +35,12 @@ public class BlacklistManager implements Serializable {
         
         private RelevanceStatus status;
         private String word;
+        private Integer count;
 
-        public KeywordSelection(String word,RelevanceStatus status) {
+        public KeywordSelection(String word,RelevanceStatus status, Integer count) {
            this.word = word;
            this.status = status;
+           this.count = count;
         }
 
         public String getWord() {
@@ -67,14 +70,34 @@ public class BlacklistManager implements Serializable {
         public String getJuged(){
            return (status == RelevanceStatus.AUTO_BLACKLISTED || status == RelevanceStatus.AUTO_WITHLISTED)? "SYSTEM" : "USER";
         }
+
+        public Integer getCount() {
+            return count;
+        }
+
+        public void setCount(Integer count) {
+            this.count = count;
+        }
+
+        public RelevanceStatus getStatus() {
+            return status;
+        }
+
+        public void setStatus(RelevanceStatus status) {
+            this.status = status;
+        }
     }
  
     private static final long serialVersionUID = 1L;
     private List<KeywordSelection> keywords;
+    private int lastViewedIndex;
     private DataTable htmlDataTable;
     
     @EJB
     RelevanceService relevanceService;
+    
+    @EJB
+    ImporterService importerService;
 	
     
     @EJB
@@ -85,7 +108,7 @@ public class BlacklistManager implements Serializable {
         keywords = new ArrayList<KeywordSelection>();
         int i = 0;
         for(RelevanceWord k : relevanceService.getRelevanceWords()){
-            keywords.add(new KeywordSelection(k.getWord(),k.getStatus()));
+            keywords.add(new KeywordSelection(k.getWord(),k.getStatus(),k.getCount()));
             i++;
         }
     }
@@ -118,12 +141,10 @@ public class BlacklistManager implements Serializable {
     }
     
     public SelectItem[] getJugedOption(){
-        SelectItem[] options = new SelectItem[3];  
-  
+        SelectItem[] options = new SelectItem[3];
         options[0] = new SelectItem("", "SELECT");
         options[1] = new SelectItem("SYSTEM", "SYSTEM");
         options[2] = new SelectItem("USER", "USER");
-        
         return options; 
     }
 
