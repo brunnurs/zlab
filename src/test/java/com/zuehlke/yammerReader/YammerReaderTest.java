@@ -4,14 +4,16 @@
  */
 package com.zuehlke.yammerReader;
 
-import com.zuehlke.lab.entity.YammerUser;
+import com.zuehlke.lab.service.importer.YammerImporterService;
+import static junit.framework.Assert.assertEquals;
 import java.io.IOException;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.tuple.Pair;
+import org.codehaus.jettison.json.JSONArray;
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.scribe.builder.ServiceBuilder;
@@ -22,12 +24,13 @@ import org.scribe.model.Token;
 import org.scribe.model.Verb;
 import org.scribe.oauth.OAuthService;
 
+
 /**
  *
  * @author user
  */
 public class YammerReaderTest {
-    String achimId = "5999174";
+
     @Test
     @Ignore
     public void printAllMsg() throws IOException, JAXBException {
@@ -39,26 +42,31 @@ public class YammerReaderTest {
         service.signRequest(accessToken, request); // the access token from step 4
         Response response = request.send();
         
-        JAXBContext context = JAXBContext.newInstance(YammerUser.class);
-        Unmarshaller unmarshaller = context.createUnmarshaller();
         System.out.println(response.getBody());
-        List<YammerUser> yammerusers = (List<YammerUser>)unmarshaller.unmarshal(response.getStream());
-        System.out.println(yammerusers.size());
+    }
+
+    @Test
+    public void simpleUnmarshalling() throws IOException, JSONException {
+        JSONObject jSONObject = new JSONObject(IOUtils.toString(this.getClass().getClassLoader().getResourceAsStream("jsonUnmarshalling/json_user")));
+        long expectedId = 5999174;
+        assertEquals(expectedId, jSONObject.getLong("id"));
+    }
+    
+    @Test
+    public void simpleAarrayUnmarshalling() throws IOException, JSONException{
+        JSONArray jSONArray = new JSONArray(IOUtils.toString(this.getClass().getClassLoader().getResourceAsStream("jsonUnmarshalling/json_users")));
+        long expectedId1 = 5999174;
+        assertEquals(expectedId1, jSONArray.getJSONObject(0).getLong("id"));
+        assertEquals(50, jSONArray.length());
+        long expectedId2 = 8785479;
+        assertEquals(expectedId2, jSONArray.getJSONObject(49).getLong("id"));
     }
     
     @Test
     @Ignore
-    public void simpleUnmarshalling(){
-        try {
-            JAXBContext context = JAXBContext.newInstance(YammerUser.class);
-            Unmarshaller unmarshaller = context.createUnmarshaller();
-            
-            YammerUser yammerUser = (YammerUser)unmarshaller.unmarshal(this.getClass().getClassLoader().getResourceAsStream("jsonUnmarshalling/json_user"));
-        } catch (JAXBException ex) {
-            System.out.println(ex.getMessage());
-            Logger.getLogger(YammerReaderTest.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        
-        
+    public void testService(){
+        YammerImporterService yammerImporterService = new YammerImporterService();
+        List<Pair<String, Long>> ids = yammerImporterService.retrieveYammerIds();
+        System.out.println(ids.get(0).getRight());
     }
 }
