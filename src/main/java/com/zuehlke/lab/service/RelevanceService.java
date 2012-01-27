@@ -90,7 +90,18 @@ public class RelevanceService {
             word = findByWord(keyword);
         }
         word.setStatus(status);
+        if(status == RelevanceStatus.BLACKLISTED){
+            removeKeywordFromDocs(keyword);
+        }
+        
         relevanceMap.put(keyword, status);
+    }
+    
+    private void removeKeywordFromDocs(String word){
+        Query q = em.createNativeQuery("DELETE FROM keyword as k WHERE k.word = ?");
+        q.setParameter(1, word);
+        q.executeUpdate();
+        em.clear();
     }
     
     public void setAutoBlacklisted(String keyword){
@@ -122,9 +133,14 @@ public class RelevanceService {
     }
     
     public List<RelevanceWord> getRelevanceWords(){
-        Query q = em.createNamedQuery("RelevanceWord.findAll");
+        Query q = em.createNamedQuery("RelevanceWord.findAllOrderByCount");
         return q.getResultList();
     }
 
-    
+    public void updateCount(){
+//        Query q = em.createNativeQuery("UPDATE RelevanceWord as rw SET Count = (SELECT SUM(k.COUNT) FROM KEYWORD k WHERE rw.WORD = k.WORD )");
+//        q.executeUpdate();
+//        em.clear();
+//        loadRelevanceList();
+    }    
 }

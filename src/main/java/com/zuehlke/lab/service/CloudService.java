@@ -18,6 +18,9 @@ import com.zuehlke.lab.entity.view.ExtendedReadOnlyKeyword;
 import com.zuehlke.lab.entity.Keyword;
 import com.zuehlke.lab.entity.Person;
 import com.zuehlke.lab.entity.view.ReadOnlyKeyword;
+import java.text.CharacterIterator;
+import java.text.StringCharacterIterator;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  *
@@ -29,6 +32,7 @@ public class CloudService {
     
     
     private static String ALL_SQL = "Select k.word, k.count FROM AGG_KEYWORD as k ORDER BY k.count DESC";
+    private static String ARG_ALL_SQL = "SELECT * FROM AGG_KEYWORD WHERE WORD ~* ?1";
     private static String PERSON_SQL = "Select k.word, k.count FROM PERSON_AGG_KEYWORD as k WHERE k.person_id = ?1";
     private static String COURSE_SQL = "Select k.word, k.count FROM EVENT_AGG_KEYWORD as k WHERE k.course_id = ?1";
     
@@ -52,7 +56,7 @@ public class CloudService {
             for(Cloud element : innnerClouds){
                 values.add(keys.get(i).getKey());
                 actParameters.add(parameters.get(pos));
-                    addRecursiveCloud(element, parameters, actParameters, values, pos+1);
+                addRecursiveCloud(element, parameters, actParameters, values, pos+1);
                 values.remove(pos);
                 actParameters.remove(pos);
                 i++;
@@ -68,7 +72,7 @@ public class CloudService {
     
     private List<ExtendedReadOnlyKeyword> getKeywords(List<SearchAttribute> parameters, List<Object> values, SearchAttribute select){
         String sql = "SELECT k."+select.getSearchColumn()+" as id, k."+select.getSelectColumn()+" as word, SUM(k.count) as count FROM UNIT_SELECT_PERSON_AGG_KEYWORD as k ";
-        if(parameters != null && parameters.size() > 0){
+        if(parameters != null && parameters.size() > 0 && parameters.get(parameters.size()-1) != null){
             sql += "WHERE ";
             int i = 0;
             for(SearchAttribute as : parameters){
@@ -77,14 +81,18 @@ public class CloudService {
               if(values.get(i) instanceof String)sql += "'";
                       sql += String.valueOf(values.get(i));
               if(values.get(i) instanceof String)sql += "'";
-              if(i < parameters.size()-1) sql += "AND ";
+              sql += " AND ";
               i++;
             }
+            sql+= "k."+select.getSelectColumn()+" IS NOT NULL";
          }
-        sql += " GROUP BY k."+select.getSelectColumn()+", k."+select.getSearchColumn();
+        sql += " GROUP BY k."+select.getSelectColumn()+", k."+select.getSearchColumn()+" ORDER BY count DESC";
         
        System.out.print(sql);
        Query q = em.createNativeQuery(sql);
+       if(select.getMaxCount() > 0){
+            q.setMaxResults(select.getMaxCount());
+       }
        BeanResult.setQueryResultClass(q, ExtendedReadOnlyKeyword.class);
        return q.getResultList();
     }
@@ -110,6 +118,24 @@ public class CloudService {
        return getCloud("company",q.getResultList());
     }
     
+    public Cloud getCloudAggregated(){
+       Query q = em.createNativeQuery(ALL_SQL);
+       q.setMaxResults(100);
+
+       BeanResult.setQueryResultClass(q, ReadOnlyKeyword.class);
+       List<Keyword> keywords = q.getResultList();
+       List<List<Keyword>> underlyingKeywords = new ArrayList<List<Keyword>>();
+       for(Keyword keyword : keywords){
+           String escaped = escapeForRegex(keyword.getWord());
+           q = em.createNativeQuery("SELECT * FROM AGG_KEYWORD WHERE WORD ~* ?1 ORDER BY COUNT DESC");
+           q.setMaxResults(100);
+           q.setParameter(1, ".*"+escaped+".*");
+           BeanResult.setQueryResultClass(q, ReadOnlyKeyword.class);
+           underlyingKeywords.add(q.getResultList());
+       }
+       return getCloud("company",keywords, underlyingKeywords);
+    }
+    
     
     public Cloud getCloud(Event c){
        Query q = em.createNativeQuery(COURSE_SQL);
@@ -124,6 +150,17 @@ public class CloudService {
        q.setParameter(1, p.getId());
        BeanResult.setQueryResultClass(q, ReadOnlyKeyword.class); 
        return getCloud(p.getFirstname()+" "+p.getLastname(),q.getResultList());
+    }
+    
+    
+    private Cloud getCloud(String rootLable, List<Keyword> keywords, List<List<Keyword>> underKeywords){
+        List<Cloud> clouds = getClouds(keywords);
+        int index = 0 ;
+        for(Cloud cloud : clouds){
+            cloud.setElements(getClouds(underKeywords.get(index)));
+            index++;
+        }
+        return new Cloud(rootLable,0,clouds);
     }
     
     private Cloud getCloud(String rootLable, List<Keyword> keywords){
@@ -143,4 +180,89 @@ public class CloudService {
         }
         return clouds;
     }
+    
+    
+    
+      /**
+   Replace characters having special meaning in regular expressions
+   with their escaped equivalents, preceded by a '\' character.
+  
+   <P>The escaped characters include :
+  <ul>
+  <li>.
+  <li>\
+  <li>?, * , and +
+  <li>&
+  <li>:
+  <li>{ and }
+  <li>[ and ]
+  <li>( and )
+  <li>^ and $
+  </ul>
+  */
+  public static String escapeForRegex(String aRegexFragment){
+    final StringBuilder result = new StringBuilder();
+
+    final StringCharacterIterator iterator = 
+      new StringCharacterIterator(aRegexFragment)
+    ;
+    char character =  iterator.current();
+    while (character != CharacterIterator.DONE ){
+      /*
+       All literals need to have backslashes doubled.
+      */
+      if (character == '.') {
+        result.append("\\.");
+      }
+      else if (character == '\\') {
+        result.append("\\\\");
+      }
+      else if (character == '?') {
+        result.append("\\?");
+      }
+      else if (character == '*') {
+        result.append("\\*");
+      }
+      else if (character == '+') {
+        result.append("\\+");
+      }
+      else if (character == '&') {
+        result.append("\\&");
+      }
+      else if (character == ':') {
+        result.append("\\:");
+      }
+      else if (character == '{') {
+        result.append("\\{");
+      }
+      else if (character == '}') {
+        result.append("\\}");
+      }
+      else if (character == '[') {
+        result.append("\\[");
+      }
+      else if (character == ']') {
+        result.append("\\]");
+      }
+      else if (character == '(') {
+        result.append("\\(");
+      }
+      else if (character == ')') {
+        result.append("\\)");
+      }
+      else if (character == '^') {
+        result.append("\\^");
+      }
+      else if (character == '$') {
+        result.append("\\$");
+      }
+      else {
+        //the char is not a special one
+        //add it to the result as is
+        result.append(character);
+      }
+      character = iterator.next();
+    }
+    return result.toString();
+  }
 }

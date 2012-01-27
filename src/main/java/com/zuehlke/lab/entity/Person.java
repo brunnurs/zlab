@@ -6,10 +6,8 @@ package com.zuehlke.lab.entity;
 
 import java.io.Serializable;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Lob;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.PrePersist;
 
 /**
@@ -17,10 +15,12 @@ import javax.persistence.PrePersist;
  * @author user
  */
 @Entity
+@NamedQueries({@NamedQuery(name="Person.findByName",query="SELECT p FROM Person p WHERE p.firstname =  :firstname AND p.lastname = :lastname")})
 public class Person extends Owner implements Serializable {
     private static final long serialVersionUID = 1L;
     private String firstname;
     private String lastname;
+    private Long yammerId; 
     
 
 
@@ -34,6 +34,14 @@ public class Person extends Owner implements Serializable {
         this.lastname = lastname;
     }
 
+    public Long getYammerId() {
+        return yammerId;
+    }
+
+    public void setYammerId(Long yammerId) {
+        this.yammerId = yammerId;
+    }
+    
     @Override
     public int getFactor(){
         return 1;

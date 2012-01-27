@@ -18,7 +18,6 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.NONE)
-@Entity
 public class YammerUser implements Serializable {
     @Id
     private Long id;
