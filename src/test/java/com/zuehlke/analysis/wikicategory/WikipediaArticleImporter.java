@@ -5,7 +5,8 @@
 package com.zuehlke.analysis.wikicategory;
 
 import com.zuehlke.lab.entity.WikiArticle;
-import com.zuehlke.lab.entity.WikiCategory;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
@@ -21,16 +22,16 @@ public class WikipediaArticleImporter {
     public WikipediaArticleImporter() {
     }
 
-    @Test
-    public void taaaest(){
-        System.out.println("test");
-        WikipediaArticleImporter importer = new WikipediaArticleImporter();
-        importer.importArticles();
-        
-    }
     
-    public void importArticles() {
+    @Test
+    public void importArticles() throws ClassNotFoundException, SQLException {
 
+        Class.forName("org.apache.derby.jdbc.EmbeddedDriver");
+        Class.forName("org.apache.derby.jdbc.ClientDriver");
+        DriverManager.getConnection("jdbc:derby://localhost:1527/sample").close();
+
+
+ 
         EntityManagerFactory emFactory = Persistence.createEntityManagerFactory("wikiImporterPU");
         EntityManager em = emFactory.createEntityManager();
         try {
