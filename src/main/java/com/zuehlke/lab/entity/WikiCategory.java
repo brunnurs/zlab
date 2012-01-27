@@ -11,7 +11,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.Transient;
+import javax.persistence.OneToMany;
 
 /**
  *
@@ -28,12 +28,20 @@ public class WikiCategory implements Serializable {
     
     private String parentPath;
     
-    @Transient
-    private List<WikiCategory> parents = new LinkedList<WikiCategory>() ;
-    @Transient
+    @OneToMany
+    private List<WikiCategory> parents = new LinkedList<WikiCategory>();
+    @OneToMany
     private List<WikiCategory> childs = new LinkedList<WikiCategory>();
     
 
+    public WikiCategory(){
+        
+    }
+
+    public WikiCategory(String description){ 
+        this.description = description;
+    }
+    
     public Long getId() {
         return id;
     }
@@ -56,7 +64,7 @@ public class WikiCategory implements Serializable {
             return false;
         }
         WikiCategory other = (WikiCategory) object;
-        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
+        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id)) || !this.description.equals(other.description)) {
             return false;
         }
         return true;
@@ -98,7 +106,5 @@ public class WikiCategory implements Serializable {
     public void setParents(List<WikiCategory> parents) {
         this.parents = parents;
     }
-
-    
 
 }

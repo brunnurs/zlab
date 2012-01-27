@@ -16,12 +16,22 @@ import javax.persistence.Id;
  */
 @Entity
 public class WikiArticle implements Serializable {
+
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    
     private String title;
+    //to keep things simple and fast, save the direct categories just as a String, separated by "|"
+    //the real categories will be loaded from the db, as a graph
+    private String directCategories;
+
+    public WikiArticle() {
+    }
+
+    public WikiArticle(String title) {
+        this.title = title;
+    }
 
     public Long getId() {
         return id;
@@ -63,5 +73,20 @@ public class WikiArticle implements Serializable {
     public void setTitle(String title) {
         this.title = title;
     }
- 
+
+    public String getDirectCategories() {
+        return directCategories;
+    }
+
+    public void setDirectCategories(String directCategories) {
+        this.directCategories = directCategories;
+    }
+
+    public void appendCategory(String category) {
+        if (this.directCategories == null) {
+            this.setDirectCategories(category);
+        } else {
+            this.setDirectCategories(this.directCategories + "|" + category);
+        }
+    }
 }
