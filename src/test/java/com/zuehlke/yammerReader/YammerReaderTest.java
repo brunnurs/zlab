@@ -4,14 +4,13 @@
  */
 package com.zuehlke.yammerReader;
 
-import com.zuehlke.lab.entity.YammerUser;
+import static junit.framework.Assert.assertEquals;
 import java.io.IOException;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
+import org.apache.commons.io.IOUtils;
+import org.codehaus.jettison.json.JSONArray;
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.scribe.builder.ServiceBuilder;
@@ -27,10 +26,10 @@ import org.scribe.oauth.OAuthService;
  * @author user
  */
 public class YammerReaderTest {
-    String achimId = "5999174";
+
     @Test
     @Ignore
-    public void printAllMsg() throws IOException, JAXBException {
+    public void printAllUsers() throws IOException, JAXBException {
         OAuthService service = new ServiceBuilder().provider(YammerApi.class).apiKey("kvl0i1Cue7AvlBhE5VjEQ").apiSecret("X3ugswFmUVhFr38Usy5A4FtOWZg9vkQqEa8dPRhpHQ").build();
         Token accessToken = new Token("MNu9aicIIbT0g8pZ9VChkQ", "OmSz5PJpl8Qh7x7fEB6zc3bBd4hBS63ce41iRGThFxU");
 
@@ -38,27 +37,43 @@ public class YammerReaderTest {
 
         service.signRequest(accessToken, request); // the access token from step 4
         Response response = request.send();
-        
-        JAXBContext context = JAXBContext.newInstance(YammerUser.class);
-        Unmarshaller unmarshaller = context.createUnmarshaller();
+
         System.out.println(response.getBody());
-        List<YammerUser> yammerusers = (List<YammerUser>)unmarshaller.unmarshal(response.getStream());
-        System.out.println(yammerusers.size());
     }
-    
-    @Test
+
     @Ignore
-    public void simpleUnmarshalling(){
-        try {
-            JAXBContext context = JAXBContext.newInstance(YammerUser.class);
-            Unmarshaller unmarshaller = context.createUnmarshaller();
-            
-            YammerUser yammerUser = (YammerUser)unmarshaller.unmarshal(this.getClass().getClassLoader().getResourceAsStream("jsonUnmarshalling/json_user"));
-        } catch (JAXBException ex) {
-            System.out.println(ex.getMessage());
-            Logger.getLogger(YammerReaderTest.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        
-        
+    @Test
+    public void simpleUnmarshalling() throws IOException, JSONException {
+        JSONObject jSONObject = new JSONObject(IOUtils.toString(this.getClass().getClassLoader().getResourceAsStream("jsonUnmarshalling/json_user")));
+        long expectedId = 5999174;
+        assertEquals(expectedId, jSONObject.getLong("id"));
     }
+
+    @Ignore
+    @Test
+    public void simpleAarrayUnmarshalling() throws IOException, JSONException {
+        JSONArray jSONArray = new JSONArray(IOUtils.toString(this.getClass().getClassLoader().getResourceAsStream("jsonUnmarshalling/json_users")));
+        long expectedId1 = 5999174;
+        assertEquals(expectedId1, jSONArray.getJSONObject(0).getLong("id"));
+        assertEquals(50, jSONArray.length());
+        long expectedId2 = 8785479;
+        assertEquals(expectedId2, jSONArray.getJSONObject(49).getLong("id"));
+    }
+
+    @Test
+    public void printAllMsg() throws JSONException {
+        
+        OAuthService service = new ServiceBuilder().provider(YammerApi.class).apiKey("kvl0i1Cue7AvlBhE5VjEQ").apiSecret("X3ugswFmUVhFr38Usy5A4FtOWZg9vkQqEa8dPRhpHQ").build();
+        Token accessToken = new Token("MNu9aicIIbT0g8pZ9VChkQ", "OmSz5PJpl8Qh7x7fEB6zc3bBd4hBS63ce41iRGThFxU");
+
+        String requestString = "https://www.yammer.com/api/v1/messages/from_user/5995090.json";
+        OAuthRequest request = new OAuthRequest(Verb.GET, requestString);
+        service.signRequest(accessToken, request);
+        Response response = request.send();
+        JSONObject jSONObject = new JSONObject(response.getBody());
+        JSONArray jSONArray = jSONObject.getJSONArray("messages");
+        System.out.println(jSONArray);
+        System.out.println(jSONArray.length());
+    }
+
 }

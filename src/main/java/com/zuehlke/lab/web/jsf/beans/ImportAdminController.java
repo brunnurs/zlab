@@ -5,6 +5,7 @@
 package com.zuehlke.lab.web.jsf.beans;
 
 import com.zuehlke.lab.service.importer.ImporterService;
+import com.zuehlke.lab.service.importer.YammerImporterService;
 import java.io.IOException;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -22,11 +23,15 @@ public class ImportAdminController {
     @Inject
     ImporterService importService;
     
+    @Inject
+    YammerImporterService yammerImporterService;
+    
+    
     public void uploadWordBundle(FileUploadEvent event) throws IOException{
         importService.importWordBundle(event.getFile().getContents());
     }
     
     public void importYammerUsers(){
-        
+        yammerImporterService.insertYammerIds();
     }
 }
