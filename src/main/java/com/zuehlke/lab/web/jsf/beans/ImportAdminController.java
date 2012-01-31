@@ -42,8 +42,18 @@ public class ImportAdminController {
         yammerImporterService.insertYammerIds();
     }
     
+
     
     public void analyseDocuments(){
         documentAnalysisService.analyseDocuments();
+    }
+    
+    public void importYammerPostsByUser(){
+        yammerImporterService.importYammerPostsByUser();
+    }
+    
+    public void importYammerPostsByNetwork(){
+        yammerImporterService.importYammerPostsByNetwork(21);
+
     }
 }

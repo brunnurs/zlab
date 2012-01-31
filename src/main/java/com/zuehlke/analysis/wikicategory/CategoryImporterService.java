@@ -54,7 +54,22 @@ public class CategoryImporterService {
             System.out.println(ex.getMessage());
         }
     }
+    
+    public void initialSaveAllCategoriesToDatabase(){        
+        int current = 0;
+        for(WikiCategory cat : allCategories.values()){
+            categoryFacade.getEntityManager().merge(cat);
+            System.out.println(current+" from "+allCategories.values().size());
+            current++;
+        }
+    }
 
+    public void removeAllExistingWikiCategoriesFromDatabase(){
+        for(WikiCategory cat: categoryFacade.findAll()){
+            categoryFacade.remove(cat);
+        }
+    }
+    
     private WikiCategory getCategoryIfExistOrNot(String category) {
         if (allCategories.containsKey(category)) {
             return allCategories.get(category);
@@ -112,5 +127,10 @@ public class CategoryImporterService {
     public void setAllCategories(Map<String, WikiCategory> allCategories) {
         this.allCategories = allCategories;
     }
+
+    public void setCategoryFacade(WikiCategoryFacade categoryFacade) {
+        this.categoryFacade = categoryFacade;
+    }
+    
     
 }

@@ -9,6 +9,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Lob;
 
 /**
  *
@@ -22,6 +23,20 @@ public class WikiArticle implements Serializable {
     private Long id;
     
     private String title;
+<<<<<<< HEAD
+=======
+    //to keep things simple and fast, save the direct categories just as a String, separated by "|"
+    //the real categories will be loaded from the db, as a graph
+    @Lob
+    private String directCategories;
+
+    public WikiArticle() {
+    }
+
+    public WikiArticle(String title) {
+        this.title = title;
+    }
+>>>>>>> 5ec5dfde52542200b193a8fded895b5b82551c6a
 
     public Long getId() {
         return id;
