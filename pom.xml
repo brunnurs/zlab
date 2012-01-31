@@ -22,7 +22,12 @@
             <artifactId>derby</artifactId>
             <version>10.8.2.2</version>
             <scope>provided</scope>
-        </dependency>         
+        </dependency>
+        <dependency>
+            <groupId>postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>9.1-901-1.jdbc4</version>
+        </dependency>
         <dependency>
             <groupId>org.eclipse.persistence</groupId>
             <artifactId>javax.persistence</artifactId>

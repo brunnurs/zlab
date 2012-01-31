@@ -7,10 +7,12 @@ package com.zuehlke.lab.entity;
 import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
 
 /**
@@ -28,9 +30,11 @@ public class WikiCategory implements Serializable {
     
     private String parentPath;
     
-    @OneToMany
+    @OneToMany()
+    @JoinTable(name="CATEGORY_TO_CATEGORY_P")
     private List<WikiCategory> parents = new LinkedList<WikiCategory>();
     @OneToMany
+    @JoinTable(name="CATEGORY_TO_CATEGORY_CH")
     private List<WikiCategory> childs = new LinkedList<WikiCategory>();
     
 

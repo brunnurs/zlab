@@ -21,15 +21,15 @@ import static org.hamcrest.Matchers.*;
  *
  * @author user
  */
-public class WikiReaderTest {
-    ArticleImporterService reader;
+public class WikiArticleImportServiceTest {
+    WikiArticleImporterService reader;
     
     @Before
     public void setUp(){
-        reader = new ArticleImporterService();
+        reader = new WikiArticleImporterService();
     }
     
-    public WikiReaderTest() {
+    public WikiArticleImportServiceTest() {
     }
     
 //    @Test

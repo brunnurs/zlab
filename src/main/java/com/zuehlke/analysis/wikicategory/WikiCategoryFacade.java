@@ -17,6 +17,7 @@ import javax.persistence.PersistenceContext;
 public class WikiCategoryFacade extends AbstractFacade<WikiCategory> {
     @PersistenceContext(unitName = "cloudCompPU")
     private EntityManager em;
+    
 
     protected EntityManager getEntityManager() {
         return em;
@@ -26,4 +27,8 @@ public class WikiCategoryFacade extends AbstractFacade<WikiCategory> {
         super(WikiCategory.class);
     }
     
+    public WikiCategoryFacade(EntityManager em){
+        this();
+        this.em = em;
+    }
 }

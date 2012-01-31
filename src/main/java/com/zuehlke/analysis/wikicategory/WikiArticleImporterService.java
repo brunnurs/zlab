@@ -22,32 +22,34 @@ import javax.inject.Inject;
  * @author user
  */
 @Stateless
-public class ArticleImporterService {
+public class WikiArticleImporterService {
 
     @Inject
-    private WikiArticleFacade articleFacade;
-    
-    
+    protected WikiArticleFacade articleFacade;
     public final static String preArticle = "<http://dbpedia.org/resource/";
     public final static String preCategory = "<http://dbpedia.org/resource/Category:";
     public final static char tokenizer = '\n';
-    private Map<String, WikiCategory> allCategories = new HashMap<String, WikiCategory>();
     private Map<String, WikiArticle> articles = new HashMap<String, WikiArticle>();
     private InputStream dataInputStream;
     private long maxReadLines = 1000;
     private WikiArticle currentArticle = null;
 
-    
-    public void importAllArticles() throws IOException{
-        
-        
+    public void importAllArticles() throws IOException {
+
+
         long allReadChars = 0;
         long lastTranche = 0;
-        while((lastTranche = importATranche(100000, allReadChars)) != -1){
-            allReadChars += lastTranche;
+        try {
+
+            while ((lastTranche = importATranche(100000, allReadChars)) != -1) {
+                allReadChars += lastTranche;
+                articles = new HashMap<String, WikiArticle>(); 
+            }
+        } finally {
+            dataInputStream.close();
         }
     }
-    
+
     /**
      * Import a tranche (specified by the tranchSize) and store all WikiArticles with their direct categories in the database.
      * Return the read chars, so we can skip them for the next tranche.
@@ -56,46 +58,42 @@ public class ArticleImporterService {
      * @return
      * @throws IOException 
      */
-    private long importATranche(long trancheSize, long charsToSkip) throws IOException {
+    protected long importATranche(long trancheSize, long charsToSkip) throws IOException {
 
         BufferedReader input = new BufferedReader(new InputStreamReader(dataInputStream));
         input.skip(charsToSkip);
-        
-        try {
-            String currentLine = "";
-            long allReadChars = 0;
-            int lineCount = 0;
-            boolean breakOnNextPossibility = false;
 
-            while ((currentLine = input.readLine()) != null && lineCount <= maxReadLines) {
-                String[] articleCategory = getArticleCategoryByLine(currentLine);
+        String currentLine = "";
+        long allReadChars = 0;
+        int lineCount = 0;
+        boolean breakOnNextPossibility = false;
 
-                boolean handleArticleCategoryPairResult = false;
+        while ((currentLine = input.readLine()) != null && lineCount <= maxReadLines) {
+            String[] articleCategory = getArticleCategoryByLine(currentLine);
 
-                if (articleCategory != null) {
-                    handleArticleCategoryPairResult = handleArticleCategoryPair(articleCategory);
-                }
+            boolean handleArticleCategoryPairResult = false;
 
-
-                if (lineCount % trancheSize == 0 && lineCount > 0) {
-                    breakOnNextPossibility = true;
-                }
-                //we wait until the handleArticleCategoryPair creates the next WikiArticle and finish then for the next tranche
-                if (breakOnNextPossibility && handleArticleCategoryPairResult) {
-                    System.out.println("We finally stopped this tranche at line "+lineCount);
-                    return allReadChars;
-                }
-
-                allReadChars += currentLine.length();
-                lineCount++;
+            if (articleCategory != null) {
+                handleArticleCategoryPairResult = handleArticleCategoryPair(articleCategory);
             }
 
-            //should only reach this code if we are on the end of the file. 
-            return -1;
 
-        } finally {
-            input.close();
+            if (lineCount % trancheSize == 0 && lineCount > 0) {
+                breakOnNextPossibility = true;
+            }
+            //we wait until the handleArticleCategoryPair creates the next WikiArticle and finish then for the next tranche
+            if (breakOnNextPossibility && handleArticleCategoryPairResult) {
+                System.out.println("We finally stopped this tranche at line " + lineCount);
+                return allReadChars;
+            }
+
+            allReadChars += currentLine.length();
+            lineCount++;
         }
+
+        //should only reach this code if we are on the end of the file. 
+        return -1;
+
     }
 
 //    private String readLine(InputStreamReader inputReader) throws IOException, Exception {
@@ -122,18 +120,15 @@ public class ArticleImporterService {
     private boolean handleArticleCategoryPair(String[] articleCategory) {
 
         boolean createdNew = false;
-        if (currentArticle == null || currentArticle.getTitle().equals(articleCategory[0])) {
+        if (currentArticle == null || !currentArticle.getTitle().equals(articleCategory[0])) {
             createdNew = true;
             currentArticle = new WikiArticle(articleCategory[0]);
             articleFacade.create(currentArticle);
             this.articles.put(currentArticle.getTitle(), currentArticle);
         }
 
-        if (!allCategories.containsKey(articleCategory[1])) {
-            System.out.println("Category '" + articleCategory[1] + "' does not exist in allCategories");
-        } else {
-            currentArticle.appendCategory(articleCategory[1]);
-        }
+
+        currentArticle.appendCategory(articleCategory[1]);
 
         return createdNew;
     }
@@ -183,13 +178,7 @@ public class ArticleImporterService {
         this.maxReadLines = maxReadLines;
     }
 
-    public Map<String, WikiCategory> getAllCategories() {
-        return allCategories;
+    public void setArticleFacade(WikiArticleFacade articleFacade) {
+        this.articleFacade = articleFacade;
     }
-
-    public void setAllCategories(Map<String, WikiCategory> allCategories) {
-        this.allCategories = allCategories;
-    }
-    
-    
 }

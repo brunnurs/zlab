@@ -37,6 +37,12 @@ public class WikiArticleFacade extends AbstractFacade<WikiArticle> {
 
         return query.getResultList();
     }
+    
+    public WikiArticleFacade(EntityManager em) {
+        this();
+        this.em = em;
+        
+    }
 
     public WikiArticleFacade() {
         super(WikiArticle.class);
