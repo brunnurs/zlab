@@ -137,9 +137,8 @@ public class RelevanceService {
     }
 
     public void updateCount(){
-//        Query q = em.createNativeQuery("UPDATE RelevanceWord as rw SET Count = (SELECT SUM(k.COUNT) FROM KEYWORD k WHERE rw.WORD = k.WORD )");
-//        q.executeUpdate();
-//        em.clear();
-//        loadRelevanceList();
-    }    
+        Query q = em.createNativeQuery("UPDATE RelevanceWord SET COUNT = sub_alias.agg_count FROM (SELECT k.word as word, SUM(k.COUNT) as agg_count FROM KEYWORD k GROUP BY k.word)sub_alias WHERE RelevanceWord.word = sub_alias.word");
+        q.executeUpdate();
+        loadRelevanceList();
+    }
 }

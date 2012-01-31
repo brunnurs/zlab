@@ -48,7 +48,6 @@ public class CloudService {
     }
     
     private void addRecursiveCloud(Cloud cloud, List<SearchAttribute> parameters, List<SearchAttribute> actParameters ,List<Object> values, int pos){
-        
         List<ExtendedReadOnlyKeyword> keys = getKeywords(actParameters, values, parameters.get(pos));
         List<Cloud> innnerClouds = getClouds((List)keys);
         if(pos < parameters.size()-1){
@@ -72,8 +71,8 @@ public class CloudService {
     
     private List<ExtendedReadOnlyKeyword> getKeywords(List<SearchAttribute> parameters, List<Object> values, SearchAttribute select){
         String sql = "SELECT k."+select.getSearchColumn()+" as id, k."+select.getSelectColumn()+" as word, SUM(k.count) as count FROM UNIT_SELECT_PERSON_AGG_KEYWORD as k ";
+        sql += "WHERE ";
         if(parameters != null && parameters.size() > 0 && parameters.get(parameters.size()-1) != null){
-            sql += "WHERE ";
             int i = 0;
             for(SearchAttribute as : parameters){
               sql += "k."+as.getSearchColumn()+" = ";
@@ -83,9 +82,9 @@ public class CloudService {
               if(values.get(i) instanceof String)sql += "'";
               sql += " AND ";
               i++;
-            }
-            sql+= "k."+select.getSelectColumn()+" IS NOT NULL";
+            } 
          }
+        sql+= "k."+select.getSelectColumn()+" IS NOT NULL";
         sql += " GROUP BY k."+select.getSelectColumn()+", k."+select.getSearchColumn()+" ORDER BY count DESC";
         
        System.out.print(sql);

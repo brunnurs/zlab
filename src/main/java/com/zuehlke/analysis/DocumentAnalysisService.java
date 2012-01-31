@@ -10,6 +10,7 @@ import com.zuehlke.lab.service.RelevanceService;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import javax.ejb.Asynchronous;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.ejb.LocalBean;
@@ -31,6 +32,18 @@ public class DocumentAnalysisService {
     NLPService nlpService;
     @EJB
     RelevanceService relevanceService;
+    
+    
+    @Asynchronous
+    public void analyseDocuments(){
+        System.out.print("Analyse documents");
+        for(Document doc : entityManager.createNamedQuery("Document.findAll", Document.class).getResultList()){
+            analyzeDocument(doc);
+            System.out.print(".");
+        }
+        System.out.println("finish!");
+        relevanceService.updateCount();
+    }
 
     public void analyzeDocument(Document doc) {
         List<Keyword> keywords = getKeywords(nlpService.extractTerms(doc.getRawData()));
@@ -48,7 +61,7 @@ public class DocumentAnalysisService {
         }
     }
     
-     public List<Keyword> getKeywords(Map<String,MutableInt> nouns){
+     private List<Keyword> getKeywords(Map<String,MutableInt> nouns){
        LinkedList<Keyword> retVal =  new LinkedList<Keyword>();
        for(Map.Entry<String,MutableInt> entry : nouns.entrySet()){
           retVal.add(new Keyword(entry.getKey(),entry.getValue().intValue()));

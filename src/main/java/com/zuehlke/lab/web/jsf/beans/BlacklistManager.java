@@ -105,13 +105,12 @@ public class BlacklistManager implements Serializable {
     
     @PostConstruct
     protected void init(){
-        importerService.analyseDocuments();
-//        keywords = new ArrayList<KeywordSelection>();
-//        int i = 0;
-//        for(RelevanceWord k : relevanceService.getRelevanceWords()){
-//            keywords.add(new KeywordSelection(k.getWord(),k.getStatus(),k.getCount()));
-//            i++;
-//        }
+        keywords = new ArrayList<KeywordSelection>();
+        int i = 0;
+        for(RelevanceWord k : relevanceService.getRelevanceWords()){
+            keywords.add(new KeywordSelection(k.getWord(),k.getStatus(),k.getCount()));
+            i++;
+        }
     }
 
     public List<KeywordSelection> getKeywords() {

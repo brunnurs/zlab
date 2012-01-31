@@ -33,4 +33,8 @@ public enum SearchAttribute {
     public int getMaxCount(){
         return maxCount;
     }
+    
+    public static SearchAttribute fromString(String text) {
+        return SearchAttribute.valueOf(text);
+    }
 }

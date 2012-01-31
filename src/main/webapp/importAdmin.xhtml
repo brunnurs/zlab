@@ -17,15 +17,17 @@
                           fileLimit="1"
                           allowTypes="/(\.|\/)(doc|docx|zip)$/"/>
         </h:form>
-            
+        <h:form>
+            <h:commandButton actionListener="#{importAdminController.analyse}" value="Analyse"/>
+        </h:form>
         <h:form>
             <h:commandButton actionListener="#{importAdminController.importYammerUsers}" value="Import yammer users"/>
         </h:form>
         <h:form>
-            <h:commandButton actionListener="#{importAdminController.importYammerPosts}" value="Import yammer posts by user"/>
+            <h:commandButton actionListener="#{importAdminController.importYammerPostsByNetwork}" value="Import yammer posts by network"/>
         </h:form>
         <h:form>
-            <h:commandButton actionListener="#{importAdminController.importYammerPostsByNetwork}" value="Import yammer posts by network"/>
+            <h:commandButton actionListener="#{importAdminController.updateBlacklist}" value="update count"/>
         </h:form>
     </h:body>
 </html>

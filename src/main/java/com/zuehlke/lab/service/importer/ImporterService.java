@@ -66,15 +66,7 @@ public class ImporterService {
                personService.saveDocumentToUser(doc, firstname, lastname);
     }
     
-    @Asynchronous
-    public void analyseDocuments(){
-        System.out.print("Analyse documents");
-        for(Document doc : em.createNamedQuery("Document.findAll", Document.class).getResultList()){
-            documentAnalysisService.analyzeDocument(doc);
-            System.out.print(".");
-        }
-        System.out.println("finish!");
-    }
+    
     
     
 
