@@ -1,13 +1,12 @@
 package com.zuehlke.lab.web.jsf.beans;
 
 
+import com.zuehlke.analysis.DocumentAnalysisService;
 import com.zuehlke.lab.entity.RelevanceStatus;
-import com.zuehlke.lab.entity.RelevanceWord;
 import com.zuehlke.lab.service.RelevanceService;
 import com.zuehlke.lab.service.CloudService;
 import com.zuehlke.lab.service.importer.ImporterService;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
@@ -98,6 +97,9 @@ public class BlacklistManager implements Serializable {
     
     @EJB
     ImporterService importerService;
+    
+    @EJB
+    DocumentAnalysisService analysisService;
 	
     
     @EJB
@@ -105,7 +107,7 @@ public class BlacklistManager implements Serializable {
     
     @PostConstruct
     protected void init(){
-        importerService.analyseDocuments();
+        analysisService.analyseDocuments();
 //        keywords = new ArrayList<KeywordSelection>();
 //        int i = 0;
 //        for(RelevanceWord k : relevanceService.getRelevanceWords()){

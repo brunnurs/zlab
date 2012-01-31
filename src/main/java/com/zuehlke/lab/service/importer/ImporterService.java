@@ -9,7 +9,6 @@ import com.zuehlke.analysis.DocumentAnalysisService;
 import com.zuehlke.analysis.NLPService;
 import com.zuehlke.lab.entity.Document;
 import com.zuehlke.lab.entity.DocumentSource;
-import com.zuehlke.lab.entity.Keyword;
 import com.zuehlke.lab.entity.Person;
 import com.zuehlke.lab.entity.Unit;
 import com.zuehlke.lab.service.RelevanceService;
@@ -21,7 +20,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -35,7 +33,6 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.mutable.MutableInt;
 import org.apache.poi.hwpf.HWPFDocument;
 import org.apache.poi.hwpf.extractor.WordExtractor;
 import org.apache.poi.xwpf.extractor.XWPFWordExtractor;
@@ -69,18 +66,6 @@ public class ImporterService {
                personService.saveDocumentToUser(doc, firstname, lastname);
     }
     
-    @Asynchronous
-    public void analyseDocuments(){
-        System.out.print("Analyse documents");
-        for(Document doc : em.createNamedQuery("Document.findAll", Document.class).getResultList()){
-            documentAnalysisService.analyzeDocument(doc);
-            System.out.print(".");
-        }
-        System.out.println("finish!");
-    }
-    
-    
-
     @Asynchronous
     public void importWordBundle(byte[] data) throws IOException {
         ZipInputStream wordFilesAsStream = new ZipInputStream(new ByteArrayInputStream(data));

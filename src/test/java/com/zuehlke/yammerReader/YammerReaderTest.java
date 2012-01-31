@@ -63,6 +63,7 @@ public class YammerReaderTest {
     }
 
     @Test
+    @Ignore
     public void printAllMsg() throws JSONException {
         
         OAuthService service = new ServiceBuilder().provider(YammerApi.class).apiKey("kvl0i1Cue7AvlBhE5VjEQ").apiSecret("X3ugswFmUVhFr38Usy5A4FtOWZg9vkQqEa8dPRhpHQ").build();

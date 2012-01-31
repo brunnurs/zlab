@@ -34,6 +34,8 @@ public class RelevanceService {
     
     private Map<String, RelevanceStatus> relevanceMap;
     
+    private List<String> toUpdate;
+    
     @PostConstruct
     private void loadRelevanceList(){
        Query q = em.createNamedQuery("RelevanceWord.findAll",RelevanceWord.class);
@@ -137,9 +139,13 @@ public class RelevanceService {
     }
 
     public void updateCount(){
-//        Query q = em.createNativeQuery("UPDATE RelevanceWord as rw SET Count = (SELECT SUM(k.COUNT) FROM KEYWORD k WHERE rw.WORD = k.WORD )");
-//        q.executeUpdate();
-//        em.clear();
-//        loadRelevanceList();
-    }    
+        for(String word : toUpdate){
+            System.out.println("Reload relevance word '"+word+"'!");
+            Query q = em.createNativeQuery("UPDATE RelevanceWord rw SET count = (SELECT SUM(k.COUNT) FROM KEYWORD k WHERE rw.WORD = k.WORD AND rw.word = :word)");
+            q.setParameter("word",word);
+            q.executeUpdate();
+        }
+        toUpdate.clear();
+        loadRelevanceList();
+    }
 }
