@@ -14,7 +14,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
-import javax.ejb.Stateful;
+import javax.ejb.Singleton;
+import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
@@ -31,7 +32,8 @@ import org.codehaus.jettison.json.JSONObject;
  *
  * @author user
  */
-@Stateful
+@Stateless
+@Singleton
 @LocalBean
 public class YammerImporterService {
 
@@ -75,10 +77,13 @@ public class YammerImporterService {
     }
 
     private void savePost(JSONObject post) throws JSONException {
-        String senderId = post.getString("sender_id");
+        Long senderId = Long.parseLong(post.getString("sender_id"));
+        Logger.getLogger(YammerImporterService.class.getName()).log(Level.INFO, "safe msg for: " + senderId);
         TypedQuery<Person> query = entityManager.createNamedQuery("Person.findByYammerId", Person.class);
         query.setParameter("yammerId", senderId);
-        save(query.getSingleResult(), post);
+        List<Person> result = query.getResultList();
+        if(result.size() == 1)
+            save(result.get(0), post);
     }
 
     private void save(Person person, JSONObject post) throws JSONException {
