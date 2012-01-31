@@ -4,6 +4,7 @@
  */
 package com.zuehlke.analysis.wikicategory;
 
+import org.junit.Ignore;
 import com.zuehlke.lab.entity.WikiArticle;
 import com.zuehlke.lab.entity.WikiCategory;
 import java.io.File;
@@ -11,7 +12,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.LinkedList;
 import java.util.List;
-import org.apache.log4j.lf5.viewer.categoryexplorer.CategoryImmediateEditor;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -42,6 +42,7 @@ public class WikiCategoryServiceTest {
     }
     
     @Test
+    @Ignore
     public void testIsWordAllowedInCategories() throws FileNotFoundException{
         //****** Prepare ****
         //Load the real category-graph, to test if the performance of the graph-traverser is sufficient

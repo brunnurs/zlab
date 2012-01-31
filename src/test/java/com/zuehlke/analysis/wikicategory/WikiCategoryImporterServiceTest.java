@@ -4,6 +4,7 @@
  */
 package com.zuehlke.analysis.wikicategory;
 
+import org.junit.Ignore;
 import java.io.File;
 import java.io.FileInputStream;
 import com.zuehlke.lab.entity.WikiCategory;
@@ -60,6 +61,7 @@ public class WikiCategoryImporterServiceTest {
     }
     
     @Test
+    @Ignore
     public void testReadCategoryFileWithRealDataAndBuildGraph() throws FileNotFoundException{
         //**** prepare ****
         categoryImportService.setMaxReadLines(1000000);

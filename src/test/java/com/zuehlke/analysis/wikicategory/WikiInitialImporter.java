@@ -63,6 +63,7 @@ public class WikiInitialImporter {
     }
 
     @Test
+    @Ignore
     public void importArticles() throws ClassNotFoundException, SQLException, FileNotFoundException, IOException {
 
 
