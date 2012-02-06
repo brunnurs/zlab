@@ -77,6 +77,7 @@ public class YammerReaderTest {
         System.out.println(jSONArray.length());
     }
     
+    @Ignore
     @Test
     public void testGetAllMsgForNetwork() throws JSONException{
         final int numOfMsg = 77;

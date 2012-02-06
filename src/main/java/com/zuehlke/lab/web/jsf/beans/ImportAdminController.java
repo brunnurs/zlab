@@ -40,6 +40,6 @@ public class ImportAdminController {
     }
     
     public void importYammerPostsByNetwork(){
-        yammerImporterService.importYammerPostsByNetwork(400);
+        yammerImporterService.importYammerPostsByNetwork(21);
     }
 }
