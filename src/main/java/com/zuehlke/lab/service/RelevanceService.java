@@ -43,8 +43,7 @@ public class RelevanceService {
        } 
     }
     
-    public void removeBlackListedWords(LinkedList<Keyword> keywords){
-        LinkedList<Keyword> retVal = new LinkedList<Keyword>();
+    public void removeBlackListedWords(List<Keyword> keywords){
         Iterator<Keyword> iterator = keywords.iterator();
         while(iterator.hasNext()){
             Keyword keyword = iterator.next();
@@ -57,8 +56,8 @@ public class RelevanceService {
         }
     }
     
-    public LinkedList<Keyword>  removeWithListedWords(LinkedList<Keyword> keywords){
-        LinkedList<Keyword> retVal = new LinkedList<Keyword>();
+    public List<Keyword>  extractWithListedWords(List<Keyword> keywords){
+        List<Keyword> retVal = new LinkedList<Keyword>();
         Iterator<Keyword> iterator = keywords.iterator();
         while(iterator.hasNext()){
             Keyword keyword = iterator.next();
@@ -112,7 +111,7 @@ public class RelevanceService {
        setAutoStatus(keyword, RelevanceStatus.AUTO_WITHLISTED);
     }
     
-    public void setAutoWithlisted(LinkedList<Keyword> keywords) {
+    public void setAutoWithlisted(List<Keyword> keywords) {
         for(Keyword k :keywords){
             setAutoWithlisted(k.getWord());
         }
