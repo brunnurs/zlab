@@ -73,7 +73,9 @@ public class YammerRESTClient {
     public JSONArray retrievePostsByNetwork(int numOfPosts) throws JSONException {
         JSONArray posts = retrievePosts("");
         while(posts.length() < numOfPosts){
-            posts.put(retrievePosts(posts.getJSONObject(posts.length()-1).getString("id")));
+            JSONArray retrievedPosts = retrievePosts(posts.getJSONObject(posts.length()-1).getString("id"));
+            for(int i = 0; i < retrievedPosts.length(); i++)
+                posts.put(retrievedPosts.get(i));
         }
         return posts;
     }
@@ -84,8 +86,8 @@ public class YammerRESTClient {
         } catch (InterruptedException ex) {
             Logger.getLogger(YammerRESTClient.class.getName()).log(Level.SEVERE, null, ex);
         }
-        String  olderThanParam = StringUtils.isEmpty(olderThan) ? "" : "older_than=" + olderThan;
-        OAuthRequest request = new OAuthRequest(Verb.GET, "https://www.yammer.com/api/v1/messages.json "+ olderThanParam);
+        String  olderThanParam = StringUtils.isEmpty(olderThan) ? "" : "?older_than=" + olderThan;
+        OAuthRequest request = new OAuthRequest(Verb.GET, "https://www.yammer.com/api/v1/messages.json"+ olderThanParam);
         service.signRequest(accessToken, request);
         Response response = request.send();
         JSONObject jSONObject = new JSONObject(response.getBody());
