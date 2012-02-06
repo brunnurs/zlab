@@ -22,7 +22,10 @@
             <h:commandButton actionListener="#{importAdminController.importYammerUsers}" value="Import yammer users"/>
         </h:form>
         <h:form>
-            <h:commandButton actionListener="#{importAdminController.importYammerPosts}" value="Import yammer posts"/>
+            <h:commandButton actionListener="#{importAdminController.importYammerPosts}" value="Import yammer posts by user"/>
+        </h:form>
+        <h:form>
+            <h:commandButton actionListener="#{importAdminController.importYammerPostsByNetwork}" value="Import yammer posts by network"/>
         </h:form>
     </h:body>
 </html>

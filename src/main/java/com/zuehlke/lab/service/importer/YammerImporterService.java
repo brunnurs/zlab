@@ -6,6 +6,7 @@ package com.zuehlke.lab.service.importer;
 
 import com.zuehlke.analysis.DocumentAnalysisService;
 import com.zuehlke.lab.entity.Document;
+import com.zuehlke.lab.entity.DocumentSource;
 import com.zuehlke.lab.entity.Person;
 import java.util.LinkedList;
 import java.util.List;
@@ -19,6 +20,7 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.codehaus.jettison.json.JSONArray;
@@ -39,7 +41,6 @@ public class YammerImporterService {
     DocumentAnalysisService documentAnalysisService;
     @Inject
     YammerRESTClient yammerRESTClient;
-   
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public void insertYammerIds() {
@@ -52,7 +53,7 @@ public class YammerImporterService {
     }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    public void importYammerPosts() {
+    public void importYammerPostsByUser() {
         List<Person> persons = entityManager.createNamedQuery("Person.findAll", Person.class).getResultList();
         for (Person person : persons) {
             if (person.getYammerId() != null && person.getYammerId() > 0) {
@@ -61,17 +62,49 @@ public class YammerImporterService {
         }
     }
 
-    private void importPosts(Person person) {
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+    public void importYammerPostsByNetwork(int numOfPosts) {
         try {
-            JSONArray messages = yammerRESTClient.retrievePosts(person.getYammerId());
+            JSONArray messages = yammerRESTClient.retrievePostsByNetwork(numOfPosts);
+            for (int i = 0; i < messages.length(); i++) {
+                savePost(messages.getJSONObject(i));
+            }
+        } catch (JSONException ex) {
+            Logger.getLogger(YammerImporterService.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void savePost(JSONObject post) throws JSONException {
+        String senderId = post.getString("sender_id");
+        TypedQuery<Person> query = entityManager.createNamedQuery("Person.findByYammerId", Person.class);
+        query.setParameter("yammerId", senderId);
+        save(query.getSingleResult(), post);
+    }
+
+    private void save(Person person, JSONObject post) throws JSONException {
+        String text = post.getJSONObject("body").getString("plain");
+        Logger.getLogger(YammerImporterService.class.getName()).log(Level.INFO, "msg: " + text);
+        if (text.contains("Take a moment to welcome")) {
+            Logger.getLogger(YammerImporterService.class.getName()).log(Level.INFO, "ignored");
+        } else {
+            Document document = new Document();
+            document.setSource(DocumentSource.YAMMER_POST);
+            document.setRawData(text);
+            document.setOwner(person);
+            person.addDocument(document);
+            documentAnalysisService.analyzeDocument(document);
+            entityManager.persist(document);
+        }
+    }
+
+    private void importPosts(Person person) {
+        Logger.getLogger(YammerImporterService.class.getName()).log(Level.INFO, "Import posts for: " + person.getFirstname() + " " + person.getLastname());
+        try {
+            JSONArray messages = yammerRESTClient.retrievePostsByUser(person.getYammerId());
+            Logger.getLogger(YammerImporterService.class.getName()).log(Level.INFO, messages.length() + " messages retrieved.");
             for (int i = 0; i < messages.length(); i++) {
                 JSONObject message = messages.getJSONObject(i);
-                String text = message.getJSONObject("body").getString("plain");
-                Document document = new Document();
-                document.setRawData(text);
-                document.setOwner(person);
-                person.addDocument(document);
-                documentAnalysisService.analyzeDocument(document);
+                 save(person, message);
             }
         } catch (JSONException ex) {
             Logger.getLogger(YammerImporterService.class.getName()).log(Level.SEVERE, null, ex);

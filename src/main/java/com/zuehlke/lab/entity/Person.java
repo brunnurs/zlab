@@ -17,7 +17,8 @@ import javax.persistence.PrePersist;
 @Entity
 @NamedQueries({
     @NamedQuery(name="Person.findByName",query="SELECT p FROM Person p WHERE p.firstname =  :firstname AND p.lastname = :lastname"),
-    @NamedQuery(name = "Person.findAll", query = "SELECT p FROM Person p")
+    @NamedQuery(name = "Person.findAll", query = "SELECT p FROM Person p"),
+    @NamedQuery(name = "Person.findByYammerId", query = "SELECT p FROM Person p WHERE p.yammerId = :yammerId")
 })
 public class Person extends Owner implements Serializable {
     private static final long serialVersionUID = 1L;

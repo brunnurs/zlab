@@ -60,6 +60,7 @@ public class YammerReaderTest {
         assertEquals(expectedId2, jSONArray.getJSONObject(49).getLong("id"));
     }
 
+    @Ignore
     @Test
     public void printAllMsg() throws JSONException {
         
@@ -74,6 +75,38 @@ public class YammerReaderTest {
         JSONArray jSONArray = jSONObject.getJSONArray("messages");
         System.out.println(jSONArray);
         System.out.println(jSONArray.length());
+    }
+    
+    @Test
+    public void testGetAllMsgForNetwork() throws JSONException{
+        final int numOfMsg = 77;
+        OAuthService service = new ServiceBuilder().provider(YammerApi.class).apiKey("kvl0i1Cue7AvlBhE5VjEQ").apiSecret("X3ugswFmUVhFr38Usy5A4FtOWZg9vkQqEa8dPRhpHQ").build();
+        Token accessToken = new Token("MNu9aicIIbT0g8pZ9VChkQ", "OmSz5PJpl8Qh7x7fEB6zc3bBd4hBS63ce41iRGThFxU");
+        
+        OAuthRequest request = new OAuthRequest(Verb.GET, "https://www.yammer.com/api/v1/messages.json");
+        service.signRequest(accessToken, request);
+        Response response = request.send();
+        JSONObject jSONObject = new JSONObject(response.getBody());
+        JSONArray jSONArray = jSONObject.getJSONArray("messages");
+        print(jSONArray);
+        String lastId = jSONArray.getJSONObject(jSONArray.length()-1).getString("id");
+        try {
+            Thread.sleep(30000);
+        } catch (InterruptedException ex) {
+        }
+        
+        request = new OAuthRequest(Verb.GET, "https://www.yammer.com/api/v1/messages.json?older_than=" + lastId);
+        service.signRequest(accessToken, request);
+        response = request.send();
+        jSONObject = new JSONObject(response.getBody());
+        jSONArray = jSONObject.getJSONArray("messages");
+        print(jSONArray);
+        
+    }
+    
+    private void print(JSONArray jSONArray) throws JSONException{
+        for(int i = 0; i < jSONArray.length(); i++)
+            System.out.println(jSONArray.getJSONObject(i).getString("id") + ": " + jSONArray.getJSONObject(i).getJSONObject("body").getString("plain"));
     }
 
 }

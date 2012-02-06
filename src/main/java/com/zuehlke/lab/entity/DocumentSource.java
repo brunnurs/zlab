@@ -9,7 +9,7 @@ package com.zuehlke.lab.entity;
  * @author user
  */
 public enum DocumentSource {
-    COURSE_DESCRIPTION(1), PERSONAL_PROFILE(2);
+    COURSE_DESCRIPTION(1), PERSONAL_PROFILE(2), YAMMER_POST(1);
     
     private int factor;
 
