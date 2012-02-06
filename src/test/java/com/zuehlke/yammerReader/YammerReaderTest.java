@@ -6,8 +6,6 @@ package com.zuehlke.yammerReader;
 
 import static junit.framework.Assert.assertEquals;
 import java.io.IOException;
-import java.text.Normalizer;
-import java.util.regex.Pattern;
 import javax.xml.bind.JAXBException;
 import org.apache.commons.io.IOUtils;
 import org.codehaus.jettison.json.JSONArray;
