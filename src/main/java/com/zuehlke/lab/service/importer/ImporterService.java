@@ -5,6 +5,7 @@
 package com.zuehlke.lab.service.importer;
 
 import au.com.bytecode.opencsv.CSVReader;
+import com.zuehlke.analysis.DocumentAnalysisService;
 import com.zuehlke.analysis.NLPService;
 import com.zuehlke.lab.entity.Document;
 import com.zuehlke.lab.entity.DocumentSource;
@@ -57,6 +58,8 @@ public class ImporterService {
     PersonService personService;
     @EJB
     RelevanceService relevanceService;
+    @EJB
+    DocumentAnalysisService documentAnalysisService;
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     private void importWord(String rawData, String firstname, String lastname){
@@ -66,28 +69,11 @@ public class ImporterService {
                personService.saveDocumentToUser(doc, firstname, lastname);
     }
     
-    private void analyseDocument(Document doc){
-                LinkedList<Keyword> keywords = getKeywords(nlpService.extractTerms(doc.getRawData()));
-                for(Keyword keyword : relevanceService.removeWithListedWords(keywords)){
-                    keyword.setDocument(doc);
-                    doc.addKeyword(keyword);
-                    em.persist(keyword);
-                }
-                relevanceService.removeBlackListedWords(keywords);
-                relevanceService.setAutoWithlisted(keywords);
-                for(Keyword keyword : keywords){
-                    keyword.setDocument(doc);
-                    doc.addKeyword(keyword);
-                    em.persist(keyword);
-                }
-                
-    }
-    
     @Asynchronous
     public void analyseDocuments(){
         System.out.print("Analyse documents");
         for(Document doc : em.createNamedQuery("Document.findAll", Document.class).getResultList()){
-            analyseDocument(doc);
+            documentAnalysisService.analyseDocument(doc);
             System.out.print(".");
         }
         System.out.println("finish!");
@@ -161,15 +147,6 @@ public class ImporterService {
                 throw new IllegalArgumentException("filename [" + filename + "] seems not to contain a vaild name.");
             }
     }
-    
-    private LinkedList<Keyword> getKeywords(Map<String,MutableInt> nouns){
-       LinkedList<Keyword> retVal =  new LinkedList<Keyword>();
-       for(Map.Entry<String,MutableInt> entry : nouns.entrySet()){
-          retVal.add(new Keyword(entry.getKey(),entry.getValue().intValue()));
-       }
-       return retVal;
-    }
-    
     
     public void updatePerson() throws FileNotFoundException, IOException{
         Map<String,Unit> units = new HashMap<String, Unit>();

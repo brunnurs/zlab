@@ -4,23 +4,19 @@
  */
 package com.zuehlke.lab.service.importer;
 
-import com.zuehlke.analysis.DocumentAnalysisService;
+import com.zuehlke.analysis.LexiconImpl;
 import com.zuehlke.lab.entity.Document;
-import com.zuehlke.lab.entity.Keyword;
 import com.zuehlke.lab.entity.Person;
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.ejb.EJB;
+import javax.annotation.PostConstruct;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateful;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import org.apache.commons.lang3.mutable.MutableInt;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.codehaus.jettison.json.JSONArray;
@@ -40,21 +36,22 @@ import org.scribe.oauth.OAuthService;
  */
 @Stateful
 @LocalBean
-public class YammerImporterService {
-
-    @PersistenceContext(name = "cloudCompPU")
-    EntityManager entityManager;
-    @EJB
-    DocumentAnalysisService documentAnalysisService;
+public class YammerRESTClient {
     private final long WEBSERVICE_TIMEOUT = 30000;
-    OAuthService service = new ServiceBuilder().provider(YammerApi.class).apiKey("kvl0i1Cue7AvlBhE5VjEQ").apiSecret("X3ugswFmUVhFr38Usy5A4FtOWZg9vkQqEa8dPRhpHQ").build();
-    Token accessToken = new Token("MNu9aicIIbT0g8pZ9VChkQ", "OmSz5PJpl8Qh7x7fEB6zc3bBd4hBS63ce41iRGThFxU");
+    OAuthService service;
+    Token accessToken;
 
+    @PostConstruct
+    protected void init(){
+        service = new ServiceBuilder().provider(YammerApi.class).apiKey("kvl0i1Cue7AvlBhE5VjEQ").apiSecret("X3ugswFmUVhFr38Usy5A4FtOWZg9vkQqEa8dPRhpHQ").build();
+        accessToken = new Token("MNu9aicIIbT0g8pZ9VChkQ", "OmSz5PJpl8Qh7x7fEB6zc3bBd4hBS63ce41iRGThFxU");
+    }
+    
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public void insertYammerIds() {
         List<Pair<String, Long>> yammerIds = retrieveYammerIds();
         List<Person> persons = entityManager.createNamedQuery("Person.findAll", Person.class).getResultList();
-        Logger.getLogger(YammerImporterService.class.getName()).log(Level.INFO, "Retrieved " + yammerIds + " yammer ids.");
+        Logger.getLogger(YammerRESTClient.class.getName()).log(Level.INFO, "Retrieved " + yammerIds + " yammer ids.");
         for (Pair<String, Long> yammerId : yammerIds) {
             addYammerId(persons, yammerId);
         }
@@ -68,7 +65,7 @@ public class YammerImporterService {
                 try {
                     Thread.sleep(WEBSERVICE_TIMEOUT);
                 } catch (InterruptedException ex) {
-                    Logger.getLogger(YammerImporterService.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(YammerRESTClient.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 importPosts(person);
             }
@@ -88,7 +85,7 @@ public class YammerImporterService {
                 documentAnalysisService.analyseDocument(document);
             }
         } catch (JSONException ex) {
-            Logger.getLogger(YammerImporterService.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(YammerRESTClient.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -100,13 +97,13 @@ public class YammerImporterService {
         for (Person person : persons) {
             if (fullname.contains(deAccent(person.getFirstname().toLowerCase())) && fullname.contains(deAccent(person.getLastname().toLowerCase()))) {
                 person.setYammerId(id);
-                Logger.getLogger(YammerImporterService.class.getName()).log(Level.INFO, "Found match for: " + yammerId.getLeft());
+                Logger.getLogger(YammerRESTClient.class.getName()).log(Level.INFO, "Found match for: " + yammerId.getLeft());
                 found = true;
                 break;
             }
         }
         if (!found) {
-            Logger.getLogger(YammerImporterService.class.getName()).log(Level.INFO, "Found NO match for: " + yammerId.getLeft());
+            Logger.getLogger(YammerRESTClient.class.getName()).log(Level.INFO, "Found NO match for: " + yammerId.getLeft());
         }
 
     }
@@ -132,12 +129,12 @@ public class YammerImporterService {
                     try {
                         Thread.sleep(WEBSERVICE_TIMEOUT);
                     } catch (InterruptedException ex) {
-                        Logger.getLogger(YammerImporterService.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(YammerRESTClient.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
             }
         } catch (JSONException ex) {
-            Logger.getLogger(YammerImporterService.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(YammerRESTClient.class.getName()).log(Level.SEVERE, null, ex);
         }
         return ids;
     }
